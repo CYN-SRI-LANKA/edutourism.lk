@@ -1,0 +1,88 @@
+/* Fixed Mobile Navigation Solution */
+
+/* Mobile menu button */
+.mobile-menu-btn {
+    display: none;
+  }
+  
+  /* Mobile-specific styles */
+  @media only screen and (max-width: 767px) {
+    /* Show hamburger button on mobile */
+    .mobile-menu-btn {
+      display: block;
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      cursor: pointer;
+      z-index: 9999;
+    }
+    
+    .mobile-menu-btn span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background-color: #333;
+      margin: 5px 0;
+      transition: all 0.3s ease;
+    }
+    
+    /* Hide the original nav menu by default on mobile */
+    .nav-menu.mobile-menu {
+      display: none;
+    }
+    
+    /* When active class is added, show the menu */
+    .nav-menu.mobile-menu.active {
+      display: block !important;
+      position: absolute;
+      width: 100%;
+      background-color: #fff;
+      top: 60px;
+      left: 0;
+      z-index: 999;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Force vertical layout for the menu */
+    .nav-menu.mobile-menu.active ul {
+      display: block !important;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    
+    /* Style each menu item */
+    .nav-menu.mobile-menu.active ul li {
+      display: block !important;
+      width: 100%;
+      text-align: left;
+      padding: 0;
+      border-bottom: 1px solid #eaeaea;
+    }
+    
+    /* Style the links */
+    .nav-menu.mobile-menu.active ul li a {
+      display: block !important;
+      padding: 15px 20px;
+      font-size: 16px;
+      min-height: 44px;
+    }
+    
+    /* Hide the empty mob-menu-wrap as we're not using it */
+    #mob-menu-wrap {
+      display: none;
+    }
+    
+    /* Animate hamburger to X when menu is open */
+    .mobile-menu-btn.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 6px);
+    }
+    
+    .mobile-menu-btn.active span:nth-child(2) {
+      opacity: 0;
+    }
+    
+    .mobile-menu-btn.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -6px);
+    }
+  }

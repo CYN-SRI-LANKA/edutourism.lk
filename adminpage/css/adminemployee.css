@@ -1,0 +1,138 @@
+/* admin.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: #f9f9f9;
+    color: #333;
+}
+
+h1, h2 {
+    color: #2c3e50;
+}
+
+form.form-inline, form.form-inline input, form.form-inline select, form.form-inline button {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 5px 10px 10px 0;
+}
+
+input[type=text], input[type=email], select {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    width: 180px;
+}
+
+button {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #27ae60;
+}
+
+.remove-btn {
+    background-color: #e74c3c;
+    padding: 6px 12px;
+}
+
+.remove-btn:hover {
+    background-color: #c0392b;
+}
+
+.msg {
+    padding: 12px;
+    background: #dff0d8;
+    border: 1px solid #3c763d;
+    color: #3c763d;
+    margin-bottom: 20px;
+    max-width: 600px;
+    border-radius: 4px;
+}
+
+.emp-list {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+}
+
+.emp-list th, .emp-list td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+#attendance-table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 700px;
+    font-size: 13px;
+}
+
+#attendance-table th, #attendance-table td {
+    border: 1px solid #bbb;
+    padding: 5px 8px;
+    text-align: center;
+    min-width: 25px;
+}
+
+#attendance-table th {
+    background-color: #34495e;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+/* Colors for attendance hours */
+td.work-hours.red {
+    background-color: #ffd6d6;
+    color: #c0392b;
+    font-weight: bold;
+}
+td.work-hours.yellow {
+    background-color: #fffed6;
+    color: #d4ac0d;
+    font-weight: bold;
+}
+td.work-hours.green {
+    background-color: #d6ffd6;
+    color: #27ae60;
+    font-weight: bold;
+}
+td.work-hours.gray {
+    color: #999;
+    background-color: #eee;
+}
+
+/* Scroll container styling */
+#attendance-table-container {
+    border: 1px solid #ccc;
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+/* Responsive improvements */
+@media(max-width: 768px) {
+    input[type=text], input[type=email], select {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    form.form-inline {
+        display: block;
+    }
+    button {
+        width: 100%;
+    }
+}

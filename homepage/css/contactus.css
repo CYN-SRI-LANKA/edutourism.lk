@@ -1,0 +1,301 @@
+/* Contact Page Styles with Unique Names */
+
+:root {
+    --contact-primary-color: #1a2b49;
+    /* Deep blue */
+    --contact-secondary-color: #ff7e00;
+    /* Orange */
+    --contact-text-color: #333333;
+    --contact-light-gray: #f5f5f5;
+    --contact-medium-gray: #e0e0e0;
+    --contact-dark-gray: #888888;
+    --contact-white: #ffffff;
+    --contact-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    --contact-transition: all 0.3s ease;
+}
+
+
+/* Contact Section */
+
+.edu-contact-section {
+    padding: 80px 0;
+}
+
+
+/* Contact Info */
+
+.edu-contact-info-box {
+    background-color: var(--contact-white);
+    border-radius: 8px;
+    box-shadow: var(--contact-shadow);
+    padding: 30px;
+    height: 100%;
+}
+
+.edu-contact-info-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--contact-primary-color);
+    margin-bottom: 10px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.edu-contact-info-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--contact-secondary-color);
+}
+
+.edu-contact-subtitle {
+    color: var(--contact-dark-gray);
+    margin-bottom: 30px;
+}
+
+
+/* Contact Links */
+
+.edu-contact-links-wrapper {
+    margin-bottom: 30px;
+}
+
+.edu-contact-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed var(--contact-medium-gray);
+}
+
+.edu-contact-item:last-child {
+    border-bottom: none;
+}
+
+.edu-contact-item-label {
+    font-weight: 600;
+    color: var(--contact-text-color);
+    font-size: 16px;
+}
+
+.edu-contact-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    background: linear-gradient(45deg, var(--contact-primary-color), #2a3b59);
+    color: var(--contact-white);
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: var(--contact-transition);
+    box-shadow: 0 3px 10px rgba(26, 43, 73, 0.2);
+}
+
+.edu-contact-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(26, 43, 73, 0.3);
+    color: var(--contact-white);
+}
+
+.edu-contact-button i {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+
+/* Social Media Buttons Colors */
+
+.edu-contact-whatsapp .edu-contact-button {
+    background: linear-gradient(45deg, #25D366, #128C7E);
+}
+
+.edu-contact-facebook .edu-contact-button {
+    background: linear-gradient(45deg, #3b5998, #4267B2);
+}
+
+.edu-contact-instagram .edu-contact-button {
+    background: linear-gradient(45deg, #833AB4, #E1306C);
+}
+
+.edu-contact-tiktok .edu-contact-button {
+    background: linear-gradient(45deg, #000000, #EE1D52);
+}
+
+.edu-contact-youtube .edu-contact-button {
+    background: linear-gradient(45deg, #FF0000, #CC0000);
+}
+
+.edu-contact-linkedin .edu-contact-button {
+    background: linear-gradient(45deg, #0077B5, #0A66C2);
+}
+
+
+/* Map */
+
+.edu-contact-map {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--contact-shadow);
+    margin-top: 30px;
+}
+
+
+/* Contact Form */
+
+.edu-contact-form-container {
+    background-color: var(--contact-white);
+    border-radius: 8px;
+    box-shadow: var(--contact-shadow);
+    padding: 30px;
+    height: 100%;
+}
+
+.edu-contact-form-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--contact-primary-color);
+    margin-bottom: 10px;
+}
+
+.edu-contact-form-subtitle {
+    color: var(--contact-dark-gray);
+    margin-bottom: 25px;
+}
+
+.edu-form-group {
+    margin-bottom: 20px;
+}
+
+.edu-form-control {
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid var(--contact-medium-gray);
+    border-radius: 8px;
+    font-size: 14px;
+    transition: var(--contact-transition);
+    background-color: var(--contact-light-gray);
+}
+
+.edu-form-control:focus {
+    outline: none;
+    border-color: var(--contact-secondary-color);
+    box-shadow: 0 0 0 3px rgba(255, 126, 0, 0.1);
+}
+
+textarea.edu-form-control {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.edu-send-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 30px;
+    background: linear-gradient(45deg, var(--contact-secondary-color), #ff9f40);
+    color: var(--contact-white);
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--contact-transition);
+    box-shadow: 0 3px 10px rgba(255, 126, 0, 0.3);
+}
+
+.edu-send-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 126, 0, 0.4);
+}
+
+.edu-send-btn i {
+    margin-right: 8px;
+}
+
+
+/* Alert Messages */
+
+.edu-alert {
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.edu-alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.edu-alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+
+/* Animation */
+
+@keyframes eduFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.edu-contact-info-box,
+.edu-contact-form-container {
+    animation: eduFadeIn 0.8s ease-out forwards;
+}
+
+
+/* Responsive Styles */
+
+@media (max-width: 992px) {
+    .edu-contact-section {
+        padding: 60px 0;
+    }
+    .edu-contact-info-box {
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .edu-contact-section {
+        padding: 40px 0;
+    }
+    .edu-contact-info-title {
+        font-size: 24px;
+    }
+    .edu-contact-form-title {
+        font-size: 20px;
+    }
+    .edu-contact-button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 576px) {
+    .edu-contact-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .edu-contact-item-label {
+        margin-bottom: 10px;
+    }
+    .edu-contact-button {
+        width: 100%;
+        justify-content: center;
+    }
+}

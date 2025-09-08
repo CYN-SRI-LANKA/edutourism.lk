@@ -1,0 +1,36 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+h1, h2 {
+    color: #333;
+}
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 15px 0;
+}
+button:hover {
+    background-color: #2980b9;
+}
+table {
+    width: 50%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+.msg {
+    color: green;
+    background: #dff0d8;
+    border: 1px solid #3c763d;
+    padding: 8px;
+    margin-bottom: 15px;
+    width: fit-content;
+}

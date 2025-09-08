@@ -1,0 +1,141 @@
+/* Main container styles */
+.nav-main-container {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+  }
+  
+  /* Logo section */
+  .nav-logo-section {
+    flex: 0 0 auto;
+    max-width: 200px;
+  }
+  
+  .nav-logo-section img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  /* Buttons container */
+  .nav-controls-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+  }
+  
+  /* Button styles - keeping your original class names */
+  .lli, .ll, .smale, .btn-da {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    color: #fff;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+    display: inline-block;
+    text-align: center;
+  }
+  
+  /* Button colors */
+  .lli, .ll {
+    background-color: #007BFF;
+  }
+  
+  .lli:hover, .ll:hover {
+    background-color: #0069d9;
+  }
+  
+  .smale {
+    background-color: #28a745;
+  }
+  
+  .smale:hover {
+    background-color: #218838;
+  }
+  
+  .btn-da {
+    background-color: #555;
+  }
+  
+  .btn-da:hover {
+    background-color: #444;
+  }
+  
+  /* Language switcher */
+  .nav-lang-switcher {
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-lang-switcher select {
+    padding: 7px 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+  
+  /* Desktop styles */
+  @media screen and (min-width: 769px) {
+    .nav-logo-section {
+      max-width: 250px;
+    }
+    
+    .lli, .ll, .smale, .btn-da {
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+    
+    .nav-controls-wrapper {
+      gap: 10px;
+    }
+    
+    .nav-lang-switcher select {
+      padding: 9px 12px;
+      font-size: 16px;
+    }
+  }
+  
+  /* Mobile styles - specifically for horizontal alignment */
+  @media screen and (max-width: 768px) {
+    .nav-main-container {
+      flex-direction: row;
+      align-items: center;
+      padding: 8px;
+    }
+    
+    .nav-logo-section {
+      max-width: 120px;
+    }
+    
+    .nav-controls-wrapper {
+      flex-direction: row;
+      width: auto;
+    }
+    
+    .lli, .ll, .smale, .btn-da, .nav-lang-switcher select {
+      padding: 6px 8px;
+      font-size: 12px;
+      min-width: auto;
+    }
+  }
+  
+  /* Very small screens */
+  @media screen and (max-width: 480px) {
+    .nav-controls-wrapper {
+      gap: 2px;
+    }
+    
+    .nav-logo-section {
+      max-width: 150px;
+    }
+  }
