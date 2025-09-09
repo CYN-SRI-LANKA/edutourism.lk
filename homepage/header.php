@@ -28,14 +28,13 @@ $lang = $_SESSION['site_language'];
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Muli:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
-    <link href='https://fonts.googleapis.com/css?family=Sofia' rel='stylesheet'>
 
     <!-- Tab Icon -->
     <link rel="apple-touch-icon" sizes="180x180" href="icon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="icon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="icon/favicon-16x16.png">
 
-    <!-- Css Styles -->
+    <!-- CSS Styles -->
     <link rel='stylesheet' href='css/bootstrap.min.css' type='text/css'>
     <link rel='stylesheet' href='css/font-awesome.min.css' type='text/css'>
     <link rel='stylesheet' href='css/themify-icons.css' type='text/css'>
@@ -44,23 +43,24 @@ $lang = $_SESSION['site_language'];
     <link rel='stylesheet' href='css/slicknav.min.css' type='text/css'>
     <link rel='stylesheet' href='css/header.css' type='text/css'>
     
-    <!-- Ensure mobile menu styling for safari and older browsers -->
+    <!-- Force override any framework underlines -->
     <style>
-        /* Fix for buttons on mobile */
-        @media (max-width: 575px) {
-            .user-actions .action-btn span {
-                display: inline-block !important; /* Override the display: none in the CSS */
-            }
-            
-            .action-btn {
-                width: auto !important; /* Override the fixed width */
-                height: auto !important; /* Override the fixed height */
-                padding: 6px 10px !important; /* Restore padding */
-            }
-            
-            .action-btn i {
-                margin-right: 5px !important; /* Restore margin */
-            }
+        /* Ultimate underline removal */
+        * a, * a:hover, * a:focus, * a:active, * a:visited,
+        a, a:hover, a:focus, a:active, a:visited {
+            text-decoration: none !important;
+            text-decoration-line: none !important;
+            text-decoration-color: transparent !important;
+            text-decoration-style: none !important;
+            border-bottom: none !important;
+        }
+        
+        /* Specific navigation targeting */
+        .nav-menu a, .nav-menu a:hover, .nav-menu a:focus,
+        .nav-menu ul li a, .nav-menu ul li a:hover,
+        nav a, nav a:hover, nav ul li a, nav ul li a:hover {
+            text-decoration: none !important;
+            border-bottom: none !important;
         }
     </style>
 </head>
@@ -100,7 +100,6 @@ $lang = $_SESSION['site_language'];
                             ]
                         ];
                         ?>
-
 
                         <!-- Language Switcher -->
                         <div class="lang-switcher">
@@ -159,10 +158,7 @@ $lang = $_SESSION['site_language'];
                             ]
                         ];
                         
-                        // Tour categories from index.php
-                        
-                        
-                        // Navigation menu items with dropdown options
+                        // Navigation menu items
                         $menu_items = [
                             'home' => ['url' => 'index.php', 'has_dropdown' => false],
                             'pasttours' => ['url' => 'pasttours.php', 'has_dropdown' => false],
@@ -174,10 +170,9 @@ $lang = $_SESSION['site_language'];
 
                         // Generate menu items
                         foreach ($menu_items as $key => $item) {
-                            // Check for active page - handling both formats of the active variable
+                            // Check for active page
                             $active_class = '';
                             if (isset($active)) {
-                                // Convert both to lowercase for case-insensitive comparison
                                 if (strtolower($active) == strtolower($key)) {
                                     $active_class = 'active';
                                 }
@@ -185,9 +180,6 @@ $lang = $_SESSION['site_language'];
                             
                             echo '<li class="' . $active_class . ($item['has_dropdown'] ? ' has-dropdown' : '') . '">';
                             echo '<a href="' . $item['url'] . '">' . $nav_texts[$lang][$key] . '</a>';
-                            
-                            
-                            
                             echo '</li>';
                         }
                         ?>
@@ -198,49 +190,115 @@ $lang = $_SESSION['site_language'];
     </header>
     <!-- Header End -->
 
-    <!-- Mobile Menu JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-            const mobileMenu = document.querySelector('.mobile-menu');
+            const mobileMenuContainer = document.querySelector('.nav-menu-container');
+            const mobileOverlay = document.querySelector('.mobile-overlay');
+            const mobileCloseBtn = document.querySelector('.mobile-menu-close');
+            const body = document.body;
             
-            mobileMenuBtn.addEventListener('click', function() {
-                this.classList.toggle('active');
-                mobileMenu.classList.toggle('active');
+            // Function to open mobile menu
+            function openMobileMenu() {
+                if (mobileMenuBtn && mobileMenuContainer && mobileOverlay) {
+                    mobileMenuBtn.classList.add('active');
+                    mobileMenuContainer.classList.add('active');
+                    mobileOverlay.classList.add('active');
+                    body.classList.add('menu-open');
+                }
+            }
+            
+            // Function to close mobile menu
+            function closeMobileMenu() {
+                if (mobileMenuBtn && mobileMenuContainer && mobileOverlay) {
+                    mobileMenuBtn.classList.remove('active');
+                    mobileMenuContainer.classList.remove('active');
+                    mobileOverlay.classList.remove('active');
+                    body.classList.remove('menu-open');
+                }
+            }
+            
+            // Open menu when burger is clicked
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (this.classList.contains('active')) {
+                        closeMobileMenu();
+                    } else {
+                        openMobileMenu();
+                    }
+                });
+            }
+            
+            // Close menu when close button is clicked
+            if (mobileCloseBtn) {
+                mobileCloseBtn.addEventListener('click', function() {
+                    closeMobileMenu();
+                });
+            }
+            
+            // Close menu when overlay is clicked
+            if (mobileOverlay) {
+                mobileOverlay.addEventListener('click', function() {
+                    closeMobileMenu();
+                });
+            }
+            
+            // Close menu when a navigation link is clicked
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    closeMobileMenu();
+                });
+            });
+            
+            // Close menu on escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeMobileMenu();
+                }
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 767) {
+                    closeMobileMenu();
+                }
             });
 
-            // Handle dropdowns on mobile
+            // Handle dropdowns on mobile (if you add them later)
             const dropdownItems = document.querySelectorAll('.has-dropdown');
             
             dropdownItems.forEach(item => {
                 const link = item.querySelector('a');
                 
-                // For mobile devices, first click shows dropdown, second navigates
-                link.addEventListener('click', function(e) {
-                    if (window.innerWidth <= 767) {
-                        if (!item.classList.contains('dropdown-open')) {
-                            e.preventDefault();
-                            // Close all other dropdowns
-                            dropdownItems.forEach(otherItem => {
-                                if (otherItem !== item) {
-                                    otherItem.classList.remove('dropdown-open');
-                                }
-                            });
-                            
-                            // Toggle this dropdown
-                            item.classList.add('dropdown-open');
+                if (link) {
+                    link.addEventListener('click', function(e) {
+                        if (window.innerWidth <= 767) {
+                            if (!item.classList.contains('dropdown-open')) {
+                                e.preventDefault();
+                                // Close all other dropdowns
+                                dropdownItems.forEach(otherItem => {
+                                    if (otherItem !== item) {
+                                        otherItem.classList.remove('dropdown-open');
+                                    }
+                                });
+                                
+                                // Toggle this dropdown
+                                item.classList.add('dropdown-open');
+                            }
                         }
-                    }
-                });
+                    });
+                }
             });
         });
     </script>
 
     <?php
-    // // Cart deletion functionality
+    // Cart deletion functionality
     if (isset($_GET['delcart'])) {
         $p_id = $_GET['delcart'];
-        $query = "Delete from cart where products_id='$p_id'";
+        $query = "DELETE FROM cart WHERE products_id='$p_id'";
         $run_query = mysqli_query($con, $query);
         echo "<script>window.open('index.php','_self')</script>";
     }
