@@ -1,4 +1,5 @@
 <?php
+
 // Check if language is submitted via GET or POST
 if (isset($_GET['lang'])) {
     $lang = $_GET['lang'];
@@ -142,7 +143,7 @@ $lang = $_SESSION['site_language'];
                                 'home' => 'Home',
                                 'tours' => 'Tours',
                                 'pasttours' => 'Past Tours',
-                                'downloads' => 'Downloads',
+                                'testimonials' => 'Testimonials',
                                 'aboutus' => 'About Us',
                                 'contact' => 'Contact Us',
                                 'faqs' => 'FAQs'
@@ -151,7 +152,7 @@ $lang = $_SESSION['site_language'];
                                 'home' => 'මුල් පිටුව',
                                 'tours' => 'සංචාර',
                                 'pasttours' => 'පසු ගමන්',
-                                'downloads' => 'බාගත කිරීම්',
+                                'testimonials' => 'අදහස්',
                                 'aboutus' => 'අප ගැන',
                                 'contact' => 'සම්බන්ධ වීමට',
                                 'faqs' => 'ප්‍රශ්න'
@@ -162,7 +163,7 @@ $lang = $_SESSION['site_language'];
                         $menu_items = [
                             'home' => ['url' => 'index.php', 'has_dropdown' => false],
                             'pasttours' => ['url' => 'pasttours.php', 'has_dropdown' => false],
-                            'downloads' => ['url' => 'downloads.php', 'has_dropdown' => false],
+                            'testimonials' => ['url' => 'testimonials.php', 'has_dropdown' => false],
                             'aboutus' => ['url' => 'aboutus.php', 'has_dropdown' => false],
                             'contact' => ['url' => 'contact.php', 'has_dropdown' => false],
                             'faqs' => ['url' => 'faqs.php', 'has_dropdown' => false]

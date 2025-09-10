@@ -5,35 +5,6 @@ include("functions.php");
 include("header.php");
 ?>
 <link rel="stylesheet" href="css/faqs.css">
-<!-- Breadcrumb Section Begin -->
-<div class="breacrumb-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="breadcrumb-text">
-                    <?php
-                    // Language-based breadcrumb translations
-                    $breadcrumb_texts = [
-                        'en' => [
-                            'home' => 'Home',
-                            'faqs' => 'FAQs'
-                        ],
-                        'si' => [
-                            'home' => 'මුල් පිටුව',
-                            'faqs' => 'නිතර අසන පැන'
-                        ]
-                    ];
-                    // Ensure language is set, default to English
-                    $lang = isset($_SESSION['site_language']) ? $_SESSION['site_language'] : 'en';
-                    ?>
-                    <a href="index.php"><i class="fa fa-home"></i> <?php echo $breadcrumb_texts[$lang]['home']; ?></a>
-                    <span><?php echo $breadcrumb_texts[$lang]['faqs']; ?></span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Breadcrumb Section End -->
 
 <!-- FAQs Section Begin -->
 <div class="faq-section">

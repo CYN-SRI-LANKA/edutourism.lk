@@ -1,11 +1,14 @@
 <?php
 $active = "home"; 
 include("functions.php");
+include("language.php");
 include("header.php");
 include("db.php");
 
+
+
 // Fetch active tours from database
-$tours_query = "SELECT * FROM tours WHERE status = 'active' ORDER BY created_at DESC LIMIT 6";
+$tours_query = "SELECT * FROM tours WHERE status = 'active' AND tour_status = 'upcoming' ORDER BY created_at DESC";
 $tours_result = mysqli_query($con, $tours_query);
 ?>
 <head>

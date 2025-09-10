@@ -1,91 +1,94 @@
+<?php
+// If your app sets $_SESSION['site_language'] elsewhere, you can remove this check.
+if (session_status() === PHP_SESSION_NONE) {
+    @session_start();
+}
+
+// Get current language (fallback to 'en')
+$lang = isset($_SESSION['site_language']) ? $_SESSION['site_language'] : 'en';
+
+// Multilingual content arrays
+$footer_texts = [
+    'en' => [
+        'information' => 'Information',
+        'quick_links' => 'Quick Links',
+        'additional' => 'Additional',
+        'phone' => '077 7138134 / 071 8081831',
+        'email' => 'info@edutourism.lk',
+        'address' => '2nd floor, Udeshi City, Kiribathgoda',
+        'terms' => 'Terms & Conditions',
+        'refunds' => 'Policy Refunds',
+        'home' => 'Home',
+        'past_tours' => 'Past Tours',
+        'downloads' => 'Downloads',
+        'about' => 'About Us',
+        'contact' => 'Contact Us',
+        'faqs' => 'FAQs',
+        'guidelines' => 'Guidelines',
+        'statistics' => 'Statistics View',
+        'copyright' => '© 2025 EduTourism. All rights reserved.',
+        'language' => 'Language:'
+    ],
+    'si' => [
+        'information' => 'තොරතුරු',
+        'quick_links' => 'ඉක්මන් සබැඳි',
+        'additional' => 'අමතර',
+        'phone' => '077 7138134 / 071 8081831',
+        'email' => 'info@edutourism.lk',
+        'address' => '2 වන මහල, උදේෂි සිටි, කිරිබත්ගොඩ',
+        'terms' => 'නියමයන් සහ කොන්දේසි',
+        'refunds' => 'ප්‍රතිපණ ප්‍රතිපත්තිය',
+        'home' => 'මුල් පිටුව',
+        'past_tours' => 'පසුගිය චාරිකා',
+        'downloads' => 'බාගැනීම්',
+        'about' => 'අප ගැන',
+        'contact' => 'අප වෙත',
+        'faqs' => 'නිති ප්‍රශ්න',
+        'guidelines' => 'මාර්ගෝපදේශ',
+        'statistics' => 'සංඛ්‍යාලේඛන දසුන',
+        'copyright' => '© 2025 EduTourism. සියලුම හිමිකම් ඇවිරිණි.',
+        'language' => 'භාෂාව:'
+    ]
+];
+
+$texts = $footer_texts[$lang];
+?>
 <head>
   <link rel="stylesheet" href="css/footer.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 </head>
+
 <!-- Footer Section Begin -->
-<footer class="footer-section">
+<footer class="footer-section" role="contentinfo">
     <div class="container">
         <!-- Footer Logo Section -->
-        <div class="footer-logo-section">
-            <div class="footer-logo">
-                <a href="index.php">
-                    <img src="img/logo.png" alt="EduTourism Logo">
-                </a>
-            </div>
-        </div>
+        <div class="footer-logo-section" style="padding: 20px 0;">
+    <div class="footer-logo">
+        <a href="index.php" aria-label="EduTourism Home">
+            <img src="img/logo.png" alt="EduTourism Logo" style="max-width:270px; height:auto; display:block;">
+        </a>
+    </div>
+</div>
+
 
         <!-- Main Footer Content -->
-        <div class="footer-content">
-            <?php
-            // Get current language
-            $lang = isset($_SESSION['site_language']) ? $_SESSION['site_language'] : 'en';
-
-            // Multilingual content arrays
-            $footer_texts = [
-                'en' => [
-                    'information' => 'Information',
-                    'quick_links' => 'Quick Links',
-                    'additional' => 'Additional',
-                    'phone' => '077 7138134 / 071 8081831',
-                    'email' => 'info@edutourism.lk',
-                    'address' => '2nd floor, Udeshi City, Kiribathgoda',
-                    'terms' => 'Terms & Conditions',
-                    'refunds' => 'Policy Refunds',
-                    'home' => 'Home',
-                    'past_tours' => 'Past Tours',
-                    'downloads' => 'Downloads',
-                    'about' => 'About Us',
-                    'contact' => 'Contact Us',
-                    'faqs' => 'FAQs',
-                    'guidelines' => 'Guidelines',
-                    'statistics' => 'Statistics View',
-                    'copyright' => '© 2025 EduTourism. All rights reserved.',
-                    'language' => 'Language:'
-                ],
-                'si' => [
-                    'information' => 'තොරතුරු',
-                    'quick_links' => 'ඉක්මන් සබැඳි',
-                    'additional' => 'අමතර',
-                    'phone' => '077 7138134 / 071 8081831',
-                    'email' => 'info@edutourism.lk',
-                    'address' => '2 වන මහල, උදේෂි සිටි, කිරිබත්ගොඩ',
-                    'terms' => 'නියමයන් සහ කොන්දේසි',
-                    'refunds' => 'ප්‍රතිපණ ප්‍රතිපත්තිය',
-                    'home' => 'මුල් පිටුව',
-                    'past_tours' => 'පසුගිය චාරිකා',
-                    'downloads' => 'බාගැනීම්',
-                    'about' => 'අප ගැන',
-                    'contact' => 'අප වෙත',
-                    'faqs' => 'නිති ප්‍රශ්න',
-                    'guidelines' => 'මාර්ගෝපදේශ',
-                    'statistics' => 'සංඛ්‍යාලේඛන දසුන',
-                    'copyright' => '© 2025 EduTourism. සියලුම හිමිකම් ඇවිරිණි.',
-                    'language' => 'භාෂාව:'
-                ]
-            ];
-
-            $texts = $footer_texts[$lang];
-            ?>
-
+        <div class="footer-content" aria-label="Footer navigation and contact">
             <!-- Information Section -->
             <div class="footer-widget info-widget">
                 <h5><?php echo $texts['information']; ?></h5>
                 <ul>
                     <li>
-                        
-                        <a href="tel:<?php echo str_replace([' ', '/'], ['', ','], $texts['phone']); ?>" class="contact-link">
+                        <a href="tel:<?php echo str_replace([' ', '/'], ['', ','], $texts['phone']); ?>" class="contact-link" aria-label="Call EduTourism">
                             <?php echo $texts['phone']; ?>
                         </a>
                     </li>
                     <li>
-                        
-                        <a href="mailto:<?php echo $texts['email']; ?>" class="contact-link">
+                        <a href="mailto:<?php echo $texts['email']; ?>" class="contact-link" aria-label="Email EduTourism">
                             <?php echo $texts['email']; ?>
                         </a>
                     </li>
                     <li>
-                        
-                        <a href="https://maps.google.com/?q=<?php echo urlencode($texts['address']); ?>" target="_blank" class="contact-link">
+                        <a href="https://maps.google.com/?q=<?php echo urlencode($texts['address']); ?>" target="_blank" rel="noopener" class="contact-link" aria-label="View address on Google Maps">
                             <?php echo $texts['address']; ?>
                         </a>
                     </li>
@@ -125,29 +128,29 @@
                 <p><?php echo $texts['copyright']; ?></p>
             </div>
 
-            <div class="footer-social">
-                <a href="https://www.facebook.com/edutourism.lk/" target="_blank" aria-label="Facebook">
-                    <i class="fa fa-facebook"></i>
+            <div class="footer-social" aria-label="Social media links">
+                <a href="https://www.facebook.com/edutourism.lk/" target="_blank" rel="noopener" aria-label="Facebook">
+                    <i class="fa fa-facebook" aria-hidden="true"></i>
                 </a>
-                <a href="https://www.instagram.com/edutourism.lk/" target="_blank" aria-label="Instagram">
-                    <i class="fa fa-instagram"></i>
+                <a href="https://www.instagram.com/edutourism.lk/" target="_blank" rel="noopener" aria-label="Instagram">
+                    <i class="fa fa-instagram" aria-hidden="true"></i>
                 </a>
-                <a href="https://www.linkedin.com/in/edutourism/" target="_blank" aria-label="LinkedIn">
-                    <i class="fa fa-linkedin"></i>
+                <a href="https://www.linkedin.com/in/edutourism/" target="_blank" rel="noopener" aria-label="LinkedIn">
+                    <i class="fa fa-linkedin" aria-hidden="true"></i>
                 </a>
-                <a href="https://www.youtube.com/@edutourismLK" target="_blank" aria-label="YouTube">
-                    <i class="fa fa-youtube"></i>
+                <a href="https://www.youtube.com/@edutourismLK" target="_blank" rel="noopener" aria-label="YouTube">
+                    <i class="fa fa-youtube" aria-hidden="true"></i>
                 </a>
-                <a href="https://www.tiktok.com/@edutourism.lk" target="_blank" aria-label="TikTok" class="tiktok-icon">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <a href="https://www.tiktok.com/@edutourism.lk" target="_blank" rel="noopener" aria-label="TikTok" class="tiktok-icon">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" role="img" aria-label="TikTok">
                         <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-.88-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
                     </svg>
                 </a>
             </div>
 
-            <div class="language-switcher">
+            <div class="language-switcher" aria-label="Language selector">
                 <span><?php echo $texts['language']; ?></span>
-                <select id="footer-language-select" onchange="changeLanguage(this.value)">
+                <select id="footer-language-select" onchange="changeLanguage(this.value)" aria-label="Choose language">
                     <option value="en" <?php echo $lang == 'en' ? 'selected' : ''; ?>>English</option>
                     <option value="si" <?php echo $lang == 'si' ? 'selected' : ''; ?>>සිංහල</option>
                 </select>
@@ -167,16 +170,26 @@
 <script src="js/main.js"></script>
 
 <script>
-// Unified language change function that works with both header and footer selectors
+// Unified language change function using URL API (safe & reliable)
 function changeLanguage(language) {
-    window.location.href = window.location.pathname + (window.location.search ? 
-        window.location.search.replace(/([?&])lang=[^&]*(&|$)/, '$1lang=' + language + '$2') : 
-        (window.location.search ? window.location.search + '&lang=' + language : '?lang=' + language));
+    try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('lang', language);
+        window.location.href = url.toString();
+    } catch (e) {
+        // Fallback for very old browsers
+        var query = window.location.search;
+        var hasLang = /([?&])lang=/.test(query);
+        if (hasLang) {
+            window.location.search = query.replace(/([?&])lang=[^&]*/,'$1lang=' + language);
+        } else {
+            window.location.search = (query ? query + '&' : '?') + 'lang=' + language;
+        }
+    }
 }
 
-// Set correct height for iOS devices with notches
+// Set CSS safe-area variables for iOS notches
 document.addEventListener('DOMContentLoaded', function() {
-    // Apply variable height adjustments for iOS devices
     if (CSS.supports('padding: env(safe-area-inset-top)')) {
         document.documentElement.style.setProperty('--safe-area-inset-top', 'env(safe-area-inset-top)');
         document.documentElement.style.setProperty('--safe-area-inset-bottom', 'env(safe-area-inset-bottom)');

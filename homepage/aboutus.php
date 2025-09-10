@@ -10,39 +10,6 @@ include("header.php");
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
-<!-- Breadcrumb Section Begin -->
-<div class="breacrumb-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="breadcrumb-text">
-                    <?php
-                    // Language-based breadcrumb translations
-                    $breadcrumb_texts = [
-                        'en' => [
-                            'home' => 'Home',
-                            'about' => 'About Us'
-                        ],
-                        'si' => [
-                            'home' => 'මුල් පිටුව',
-                            'about' => 'අප ගැන'
-                        ]
-                    ];
-
-                    // Ensure language is set, default to English
-                    $lang = isset($_SESSION['site_language']) ? $_SESSION['site_language'] : 'en';
-                    ?>
-                    <a href="index.php"><i class="fa fa-home"></i> <?php echo $breadcrumb_texts[$lang]['home']; ?></a>
-                    <span><?php echo $breadcrumb_texts[$lang]['about']; ?></span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Breadcrumb Section End -->
-
-
-
 <!-- About Section Begin -->
 <div class="about-section">
     <div class="container">
@@ -354,103 +321,7 @@ include("header.php");
     </div>
 </div>
 
-<!-- Testimonial Section Begin -->
-<div class="testimonial-section">
-    <div class="container">
-        <?php
-        // Language-based testimonial section translations
-        $testimonial_texts = [
-            'en' => [
-                'title' => 'What Our Participants Say',
-                'subtitle' => 'Authentic experiences from our program participants',
-                'testimonial1_content' => 'This HRM program tour was truly remarkable and enriching. The international exposure, prestigious certification, and opportunity to engage with influential entrepreneurs enhanced both my knowledge and career prospects. Our instructors guided us with care, ensuring a fulfilling learning journey. I am profoundly grateful to CYN and LPEC for this invaluable experience that offered immense personal and professional growth.',
-                'testimonial1_name' => 'Athadari Maharamba',
-                'testimonial1_position' => 'Student',
-                'testimonial1_org' => 'LPEC Campus',
-                'testimonial2_content' => 'I sincerely thank LPEC Campus and CYN Sri Lanka for organizing the enriching Malaysian study tour. This experience provided valuable insights, especially through interactions with entrepreneurs like Kamalini Nathan, Yoges M., and Saarvin C. Beyond learning, visits to Batugave and Gending Island showcased Malaysia\'s beauty and culture. A heartfelt thanks to Mr. Goyum, Mr. Gayan, and Ms. Nuwani for their care and guidance. This tour has greatly contributed to my academic and professional growth.',
-                'testimonial2_name' => 'Frincina Iwaugh',
-                'testimonial2_position' => 'Student',
-                'testimonial2_org' => 'LPEC Campus',
-                'testimonial3_content' => 'The LPEC Campus Chairman and staff, along with Commonwealth Youth Network Executive Director Mr. Gayan and Secretary Mr. Goyum, put in tremendous effort for this tour. I\'m personally grateful for their organization. Students from HRM Diploma, Higher Diploma, and Degree programs participated, and we gained valuable knowledge, skills, and attitudes. We learned how to navigate diverse environments, understand different cultures, and recognize our strengths and weaknesses. Special experiences included cable cars, religious sites, universities, and attending a government ceremony with the Prime Minister. I hope the staff can organize more such tours, and that LPEC students can use this knowledge to become successful entrepreneurs, not just employees, contributing to our motherland.',
-                'testimonial3_name' => 'Nilanka Rukmal',
-                'testimonial3_position' => 'Student',
-                'testimonial3_org' => 'LPEC Campus'
-            ],
-            'si' => [
-                'title' => 'සහභාගීවුවන්ගේ අදහස්',
-                'subtitle' => 'අපගේ වැඩසටහන් සහභාගිවන්නන්ගේ සැබෑ අත්දැකීම්',
-                'testimonial1_content' => 'මෙම මානව සම්පත් කළමනාකරණ (HRM) වැඩසටහන සැබවින්ම සුවිශේෂී හා පොහොසත් අත්දැකීමක් විය. ජාත්‍යන්තර නිරාවරණය, ප්‍රතිෂ්ඨාපිත සහතිකකරණය, සහ ප්‍රභාවශාලී ව්‍යවසායකයින් සමඟ සම්බන්ධ වීමේ අවස්ථාව මගේ දැනුම සහ වෘත්තීය අනාගතය යන දෙකම වර්ධනය කළේය. අපගේ උපදේශකවරුන් අපව සාත්තුවෙන් මග පෙන්වූ අතර, සාර්ථක ඉගෙනුම් ගමනක් සහතික කළහ. මෙම අගනා අත්දැකීම සඳහා CYN සහ LPEC වෙත මම ගැඹුරින් කෘතඥ වෙමි, එය පුද්ගලික හා වෘත්තීය වර්ධනයට විශාල ලෙස උපකාරී විය.',
-                'testimonial1_name' => 'අතදරි මහාරඹ',
-                'testimonial1_position' => 'සිසුන්',
-                'testimonial1_org' => 'LPEC විශ්වවිද්‍යාලය',
-                'testimonial2_content' => 'පොහොසත් මැලේසියානු අධ්‍යයන සංචාරය සංවිධානය කිරීම සඳහා LPEC කැම්පස් සහ CYN ශ්‍රී ලංකාවට මම අවංකවම ස්තූතිවන්ත වෙමි. මෙම අත්දැකීම, විශේෂයෙන් කමලිනි නේතන්, යෝගේෂ් එම්., සහ සාර්වින් සී. වැනි ව්‍යවසායකයින් සමඟ අන්තර්ක්‍රියා හරහා වටිනා අවබෝධයක් ලබා දුන්නේය. ඉගෙනීමට එහා ගිය, බතුගවේ සහ ගෙන්ඩිං දූපතට කළ සංචාරය මැලේසියාවේ සුන්දරත්වය සහ සංස්කෘතිය පෙන්නුම් කළේය. ඔවුන්ගේ සැලකිල්ල සහ මඟපෙන්වීම සඳහා ගොයුම් මහතා, ගයාන් මහතා සහ නුවනි මහත්මියට හදපිරි ස්තූතියක්. මෙම සංචාරය මගේ අධ්‍යාපනික සහ වෘත්තීය වර්ධනයට විශාල වශයෙන් දායක වී ඇත.',
-                'testimonial2_name' => 'ෆ්රින්සිනා අයිවෝ',
-                'testimonial2_position' => 'සිසුන්',
-                'testimonial2_org' => 'LPEC විශ්වවිද්‍යාලය',
-                'testimonial3_content' => 'මෙම tour එක යාමට උදව් කළ මා ඉගනුම ලබන LPEC කැම්පස් එකේ අධිපතිතුමා ඇතුළු කාර්ය මණ්ඩලයට, Commonwealth Youth Network Executive Director Mr.Gayan and Secretary Mr.Goyum ලොකු වෙහෙසක් දැරුවා. මෙම tour එක සංවිධානය කිරීමට ඒ වෙනුවෙන් පුද්ගලිකවම මා ස්තුති වන්ත වෙනවා. මෙම tour එක සඳහා HRM ඩිප්ලෝමා, Higher diploma සහ Degree හදාරන සිසුන් සහභාගි වීම තවත් විශේෂ දෙයක් වූ අතර අපට ඕනි කරන දැනුම කුසලතා ආකල්ප පිළිබඳව හොඳ විවරණයක් කිරීමට හැකි විය. ඒ වගේම ලාංකික අපිට අපගේ ශක්තීන් හා දුර්වලතා හොඳින් අවබෝධ කරගෙන ඉදිරියට යාමට ඕනි කරන දැනුමක් ලබා ගැනීමට දේශනවලින් අපට ලැබිණි. විවිධ පරිසරයන්ට අපි මුහුණ දෙන්නේ කෙසේද විවිධ ජාතින් සමග හා එම රටවල්වලට ආවේණික සංස්කෘතිය ගැන හොඳ අවබෝධයක් ලබා ගැනීමට හැකි විය. කේබල් car, ආගමක ස්ථාන, Universities හා අගමැතිතුමා සහභාගි වුණ රාජයේ උත්සවයකට සහභාගි වීමට හැකිවීම විශේෂ අවස්ථාවක් විය. කාර්ය මණ්ඩලයට නැවතත් මේ සංවිධානය කිරීමට හැකියාව ලැබැයි කියා විශ්වාස කරන අතර මේ සඳහා සහභාගි වූ LPEC සිසුන් හට ලබා ගත් දැනුම උපයෝගී කරගෙන තාක්ෂණය සමග ඉදිරියට යන ලෝකයට සාර්ථක මුහුණ දී රැකියාවකට පමණක් කොටු නොවී රැකියා දෙන හොඳ entrepreneur කෙනෙක් වී අපේ මව්බිමට ශක්තියක් වීමට හැකියාව ලැබේවායි කියා wish කරනවා ස්තුතියි.',
-                'testimonial3_name' => 'නිලංක රුක්මල්',
-                'testimonial3_position' => 'සිසුන්',
-                'testimonial3_org' => 'LPEC විශ්වවිද්‍යාලය'
-            ]
-        ];
-        ?>
-        <div class="section-title">
-            <h2><?php echo $testimonial_texts[$lang]['title']; ?></h2>
-            <p><?php echo $testimonial_texts[$lang]['subtitle']; ?></p>
-        </div>
 
-        <div class="testimonial-container">
-            <div class="testimonial-box">
-                <div class="testimonial-content">
-                    <p><?php echo $testimonial_texts[$lang]['testimonial1_content']; ?></p>
-                </div>
-                <div class="testimonial-author">
-                    <div class="author-image">
-                        <img src="img/participants/athadari.png" alt="<?php echo $testimonial_texts[$lang]['testimonial1_name']; ?>">
-                    </div>
-                    <div class="author-info">
-                        <h4><?php echo $testimonial_texts[$lang]['testimonial1_name']; ?></h4>
-                        <p><?php echo $testimonial_texts[$lang]['testimonial1_position']; ?></p>
-                        <span class="organization"><?php echo $testimonial_texts[$lang]['testimonial1_org']; ?></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="testimonial-box">
-                <div class="testimonial-content">
-                    <p><?php echo $testimonial_texts[$lang]['testimonial2_content']; ?></p>
-                </div>
-                <div class="testimonial-author">
-                    <div class="author-image">
-                        <img src="img/participants/frincina.png" alt="<?php echo $testimonial_texts[$lang]['testimonial2_name']; ?>">
-                    </div>
-                    <div class="author-info">
-                        <h4><?php echo $testimonial_texts[$lang]['testimonial2_name']; ?></h4>
-                        <p><?php echo $testimonial_texts[$lang]['testimonial2_position']; ?></p>
-                        <span class="organization"><?php echo $testimonial_texts[$lang]['testimonial2_org']; ?></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="testimonial-box">
-                <div class="testimonial-content">
-                    <p><?php echo $testimonial_texts[$lang]['testimonial3_content']; ?></p>
-                </div>
-                <div class="testimonial-author">
-                    <div class="author-image">
-                        <img src="img/participants/nilanka.png" alt="<?php echo $testimonial_texts[$lang]['testimonial3_name']; ?>">
-                    </div>
-                    <div class="author-info">
-                        <h4><?php echo $testimonial_texts[$lang]['testimonial3_name']; ?></h4>
-                        <p><?php echo $testimonial_texts[$lang]['testimonial3_position']; ?></p>
-                        <span class="organization"><?php echo $testimonial_texts[$lang]['testimonial3_org']; ?></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Testimonial Section End -->
 
 <!-- Commitment Section Begin -->
 <div class="commitment-section">
