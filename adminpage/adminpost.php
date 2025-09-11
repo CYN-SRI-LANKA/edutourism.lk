@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $destination = mysqli_real_escape_string($con, $_POST['destination']);
         $duration = (int)$_POST['duration'];
         $category = mysqli_real_escape_string($con, $_POST['category']);
-        $price = mysqli_real_escape_string($con, $_POST['price']);
+        $year = mysqli_real_escape_string($con, $_POST['year']);
         $status = mysqli_real_escape_string($con, $_POST['status']);
         $tour_type = mysqli_real_escape_string($con, $_POST['tour_type']);
         $tourname = mysqli_real_escape_string($con, $_POST['tourname']);
@@ -46,9 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
         
-        $sql = "INSERT INTO tours (title_en, title_si, description_en, description_si, destination, duration, category, price, image_path, status, tour_type, tourname, tour_status, tour_date, date_range, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+        $sql = "INSERT INTO tours (title_en, title_si, description_en, description_si, destination, duration, category, year, image_path, status, tour_type, tourname, tour_status, tour_date, date_range, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
         $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "sssssisssssssss", $title_en, $title_si, $description_en, $description_si, $destination, $duration, $category, $price, $image_path, $status, $tour_type, $tourname, $tour_status, $tour_date, $date_range);
+        mysqli_stmt_bind_param($stmt, "sssssisssssssss", $title_en, $title_si, $description_en, $description_si, $destination, $duration, $category, $year, $image_path, $status, $tour_type, $tourname, $tour_status, $tour_date, $date_range);
         
         if (mysqli_stmt_execute($stmt)) {
             $tour_id = mysqli_insert_id($con);
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $destination = mysqli_real_escape_string($con, $_POST['destination']);
         $duration = (int)$_POST['duration'];
         $category = mysqli_real_escape_string($con, $_POST['category']);
-        $price = mysqli_real_escape_string($con, $_POST['price']);
+        $year = mysqli_real_escape_string($con, $_POST['year']);
         $status = mysqli_real_escape_string($con, $_POST['status']);
         $tour_type = mysqli_real_escape_string($con, $_POST['tour_type']);
         $tourname = mysqli_real_escape_string($con, $_POST['tourname']);
@@ -96,9 +96,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
         
-        $sql = "UPDATE tours SET title_en = ?, title_si = ?, description_en = ?, description_si = ?, destination = ?, duration = ?, category = ?, price = ?, status = ?, tour_type = ?, tourname = ?, tour_status = ?, tour_date = ?, date_range = ? $image_update WHERE id = ?";
+        $sql = "UPDATE tours SET title_en = ?, title_si = ?, description_en = ?, description_si = ?, destination = ?, duration = ?, category = ?, year = ?, status = ?, tour_type = ?, tourname = ?, tour_status = ?, tour_date = ?, date_range = ? $image_update WHERE id = ?";
         $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "sssssissssssssi", $title_en, $title_si, $description_en, $description_si, $destination, $duration, $category, $price, $status, $tour_type, $tourname, $tour_status, $tour_date, $date_range, $tour_id);
+        mysqli_stmt_bind_param($stmt, "sssssissssssssi", $title_en, $title_si, $description_en, $description_si, $destination, $duration, $category, $year, $status, $tour_type, $tourname, $tour_status, $tour_date, $date_range, $tour_id);
         
         if (mysqli_stmt_execute($stmt)) {
             // Update tour form if tourname changed and it's upcoming
@@ -226,8 +226,8 @@ $tours_result = mysqli_query($con, $tours_sql);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         .admin-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            color: black;
             padding: 20px 0;
             margin-bottom: 30px;
         }
@@ -275,10 +275,10 @@ $tours_result = mysqli_query($con, $tours_sql);
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <h1><i class="fas fa-route"></i> Tour Management System</h1>
+                    <h1>Tour Management System</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a href="adminmain.php" class="btn btn-outline-light"><i class="fas fa-arrow-left"></i> Main Admin</a>
+                    <a href="adminmain.php" class="btn"><i class="fas fa-arrow-left"></i> Main Admin</a>
                 </div>
             </div>
         </div>
@@ -333,7 +333,7 @@ $tours_result = mysqli_query($con, $tours_sql);
                                 <th>Tour Status</th>
                                 <th>Tour Date</th>
                                 <th>Category</th>
-                                <th>Price</th>
+                                <th>Year</th>
                                 <th>Status</th>
                                 <th>Form Link</th>
                                 <th>Actions</th>
@@ -370,7 +370,7 @@ $tours_result = mysqli_query($con, $tours_sql);
                                         ?>
                                     </td>
                                     <td><span class="badge bg-primary"><?php echo htmlspecialchars($tour['category']); ?></span></td>
-                                    <td><?php echo htmlspecialchars($tour['price']); ?></td>
+                                    <td><?php echo htmlspecialchars($tour['year']); ?></td>
                                     <td>
                                         <span class="<?php echo $tour['status'] == 'active' ? 'status-active' : 'status-inactive'; ?>">
                                             <i class="fas fa-circle"></i> <?php echo ucfirst($tour['status']); ?>
@@ -527,8 +527,8 @@ $tours_result = mysqli_query($con, $tours_sql);
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Price</label>
-                                    <input type="text" name="price" class="form-control" placeholder="e.g., $1500 or Contact for Price">
+                                    <label class="form-label">year</label>
+                                    <input type="text" name="year" class="form-control" placeholder="year">
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -669,8 +669,8 @@ $tours_result = mysqli_query($con, $tours_sql);
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Price</label>
-                                    <input type="text" name="price" id="edit_price" class="form-control">
+                                    <label class="form-label">year</label>
+                                    <input type="text" name="year" id="edit_year" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -745,7 +745,7 @@ $tours_result = mysqli_query($con, $tours_sql);
             document.getElementById('edit_destination').value = tour.destination;
             document.getElementById('edit_duration').value = tour.duration;
             document.getElementById('edit_category').value = tour.category;
-            document.getElementById('edit_price').value = tour.price;
+            document.getElementById('edit_year').value = tour.year;
             document.getElementById('edit_tour_type').value = tour.tour_type;
             document.getElementById('edit_status').value = tour.status;
             

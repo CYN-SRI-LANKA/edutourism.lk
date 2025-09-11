@@ -347,7 +347,7 @@ function render_dashboard(): void {
                     <?php endif; ?>
                 </div>
 
-                <div class="card">
+                <!-- <div class="card">
                     <div class="title">HMS</div>
                     <div class="desc">Highlight Management System</div>
                     <?php if (can_vms()): ?>
@@ -355,7 +355,7 @@ function render_dashboard(): void {
                     <?php else: ?>
                         <span class="btn disabled">No access</span>
                     <?php endif; ?>
-                </div>
+                </div> -->
 
                 <div class="card">
                     <div class="title">Report Center</div>

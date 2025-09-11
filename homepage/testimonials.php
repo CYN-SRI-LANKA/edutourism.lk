@@ -1,6 +1,6 @@
 <?php
 
-include("functions.php");
+// include("functions.php");
 include("header.php");
 
 $active = "testimonials";
@@ -50,17 +50,12 @@ $reviews = $stmt->fetchAll();
             <?php foreach ($reviews as $review): ?>
             <div class="testimonial-box">
                 <div class="testimonial-content">
-                    <div class="rating mb-2">
-                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                            <i class="fas fa-star <?php echo $i <= $review['rating'] ? 'text-warning' : 'text-muted'; ?>"></i>
-                        <?php endfor; ?>
-                    </div>
                     <p><?php echo nl2br(htmlspecialchars($lang == 'si' && $review['content_si'] ? $review['content_si'] : $review['content_en'])); ?></p>
                 </div>
                 <div class="testimonial-author">
                     <div class="author-image">
                         <?php if ($review['profile_image']): ?>
-                            <img src="uploads/reviews/<?php echo htmlspecialchars($review['profile_image']); ?>" 
+                            <img src="../adminpage/uploads/reviews/<?php echo htmlspecialchars($review['profile_image']); ?>" 
                                  alt="<?php echo htmlspecialchars($review['name']); ?>">
                         <?php else: ?>
                             <div class="default-avatar">

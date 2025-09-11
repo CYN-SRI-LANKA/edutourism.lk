@@ -54,7 +54,7 @@ if ($_POST) {
         $organization = trim($_POST['organization']);
         $content_en = trim($_POST['content_en']);
         $content_si = trim($_POST['content_si']);
-        $rating = (int)$_POST['rating'];
+
         $status = $_POST['status'];
         
         // Handle file upload
@@ -86,9 +86,9 @@ if ($_POST) {
         }
         
         if (!$error) {
-            $stmt = $pdo->prepare("INSERT INTO reviews (name, position, organization, content_en, content_si, profile_image, rating, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $pdo->prepare("INSERT INTO reviews (name, position, organization, content_en, content_si, profile_image, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
             
-            if ($stmt->execute([$name, $position, $organization, $content_en, $content_si, $profile_image, $rating, $status])) {
+            if ($stmt->execute([$name, $position, $organization, $content_en, $content_si, $profile_image, $status])) {
                 $message = 'Review added successfully!';
             } else {
                 $error = 'Failed to add review to database.';
@@ -204,8 +204,8 @@ function createThumbnail($source, $destination, $width, $height) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         .admin-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            color: black;
             padding: 2rem 0;
             margin-bottom: 2rem;
         }
@@ -250,8 +250,10 @@ function createThumbnail($source, $destination, $width, $height) {
 <div class="admin-header">
     <div class="container">
         <h1>Review Management System</h1>
-        <p class="mb-0">Manage customer testimonials and reviews</p>
     </div>
+    <div class="col-md-6 text-end">
+                    <a href="adminmain.php" class="btn"><i class="fas fa-arrow-left"></i> Main Admin</a>
+                </div>
 </div>
 
 <div class="container">
@@ -333,15 +335,6 @@ function createThumbnail($source, $destination, $width, $height) {
                             <p class="small"><?php echo substr(htmlspecialchars($review['content_si']), 0, 100) . (strlen($review['content_si']) > 100 ? '...' : ''); ?></p>
                             <?php endif; ?>
                         </div>
-                        
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="rating">
-                                <?php for ($i = 1; $i <= 5; $i++): ?>
-                                    <i class="fas fa-star <?php echo $i <= $review['rating'] ? 'text-warning' : 'text-muted'; ?>"></i>
-                                <?php endfor; ?>
-                            </div>
-                            <small class="text-muted"><?php echo date('M j, Y', strtotime($review['created_at'])); ?></small>
-                        </div>
                     </div>
                     
                     <div class="card-footer bg-light">
@@ -408,7 +401,7 @@ function createThumbnail($source, $destination, $width, $height) {
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="position" class="form-label">Position</label>
+                                <label for="position" class="form-label">Occupation</label>
                                 <input type="text" class="form-control" id="position" name="position">
                             </div>
                         </div>
@@ -422,16 +415,6 @@ function createThumbnail($source, $destination, $width, $height) {
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="mb-3">
-                                <label for="rating" class="form-label">Rating</label>
-                                <select class="form-control" id="rating" name="rating">
-                                    <option value="5">5 Stars</option>
-                                    <option value="4">4 Stars</option>
-                                    <option value="3">3 Stars</option>
-                                    <option value="2">2 Stars</option>
-                                    <option value="1">1 Star</option>
-                                </select>
-                            </div>
                         </div>
                         <div class="col-md-3">
                             <div class="mb-3">

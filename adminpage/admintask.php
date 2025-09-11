@@ -12,7 +12,7 @@
         }
 
         .bgimg {
-            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             height: 100%;
             background-position: center;
             background-repeat: no-repeat;
@@ -193,7 +193,7 @@
         }
     </style>
 </head>
-<body>
+<body style="background-color:black;">
     <div class="bgimg">
         <div class="topleft">
             <img src="../homepage/img/logo.png" style="width: 200px; height: auto;" alt="EduTourism Logo">
@@ -201,8 +201,7 @@
         <div class="middle">
             <h1>COMING SOON</h1>
             <hr>
-            <p>EduTourism v3.1</p>
-            <p style="font-size: 1rem; opacity: 0.8;">Enhanced Learning Experience</p>
+            <p>In EduTourism v3.1</p>
         </div>
         <div class="bottomleft">
             <p>Under operation<span class="loading-dots"></span></p>
@@ -226,16 +225,16 @@
                 messageDiv.innerHTML = `
                     <button class="close-btn" onclick="cancelRedirect()" title="Cancel redirect">&times;</button>
                     <div style="margin-right: 20px;">
-                        <strong style="color: #28a745;">✓ System Ready!</strong><br>
+                        <strong style="color: #28a745;">Edutourism Team</strong><br>
                         <p style="margin: 10px 0; font-size: 14px;">Redirecting to Admin Panel in <span class="countdown-number">${countdown}</span> seconds...</p>
                         <div class="progress-container">
                             <div class="progress-bar" id="progress-bar" style="width: 100%;"></div>
                         </div>
                         <a href="adminmain.php" class="btn btn-success" style="margin-right: 10px;">
-                            🚀 Go Now
+                             Go Now
                         </a>
                         <button onclick="cancelRedirect()" class="btn" style="background-color: #6c757d;">
-                            ⏸️ Cancel
+                             Cancel
                         </button>
                     </div>
                 `;
@@ -314,14 +313,7 @@
             }
         });
 
-        // Optional: Add some interactive effects
-        document.addEventListener('mousemove', function(e) {
-            const bgimg = document.querySelector('.bgimg');
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
-            
-            bgimg.style.background = `linear-gradient(${45 + x * 90}deg, #667eea 0%, #764ba2 100%)`;
-        });
+
     </script>
 </body>
 </html>

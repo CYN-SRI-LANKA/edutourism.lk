@@ -440,7 +440,7 @@ input:focus, select:focus {
 
 <!-- Employees List -->
 <div class="section">
-    <h2>👥 Employee Management</h2>
+    <h2>👥 Employees</h2>
     <div style="overflow-x: auto;">
         <table class="table">
             <thead>

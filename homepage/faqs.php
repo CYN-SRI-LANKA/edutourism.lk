@@ -2,8 +2,17 @@
 $active = "faqs";
 include('db.php');
 include("functions.php");
+include("language.php"); // Include language handling
 include("header.php");
+
+// Initialize and get current language
+// $lang = initializeLanguage();
+
+// Fetch active FAQs from database
+$faqs_sql = "SELECT * FROM faqs WHERE status = 'active' ORDER BY display_order ASC, created_at DESC";
+$faqs_result = mysqli_query($con, $faqs_sql);
 ?>
+
 <link rel="stylesheet" href="css/faqs.css">
 
 <!-- FAQs Section Begin -->
@@ -13,57 +22,46 @@ include("header.php");
             <div class="col-lg-12">
                 <div class="faq-container">
                     <?php
-                    // Multilingual page title and FAQ content
+                    // Multilingual page title
                     $page_texts = [
                         'en' => [
                             'title' => 'Frequently Asked Questions',
-                            'faqs' => [
-                                "What is included in the tour package?" => "The tour package includes accommodation, transportation, meals, and guided tours.",
-                                "How do I book a tour?" => "You can book a tour through our website or by contacting our customer service team.",
-                                "What is the cancellation policy?" => "Cancellations made 14 days before the tour date are eligible for a full refund. After that, partial refunds apply.",
-                                "Are there any age restrictions?" => "Our tours are open to all ages, but some activities may have age or physical fitness requirements.",
-                                "What should I pack for the tour?" => "We recommend packing comfortable clothing, walking shoes, and any personal items you may need. Specific packing lists will be provided for each tour.",
-                                "Are meals included in the tour price?" => "Yes, meals are included as mentioned in the tour itinerary.",
-                                "How do I get travel insurance for the tour?" => "Travel insurance is not included, but we recommend purchasing it through your local provider.",
-                                "Can I customize my tour?" => "Yes, we offer customizable tour packages. Contact us for more details."
-                            ]
+                            'no_faqs' => 'No FAQs available at the moment.',
+                            'contact_info' => 'Please contact us for any questions.'
                         ],
                         'si' => [
-                            'title' => 'නිතර අසන පැන',
-                            'faqs' => [
-                                "සංචාර පැකේජයට කුමක් ඇතුළත් වේ?" => "සංචාර පැකේජයට නවාතැන, ප්‍රවාහන, ආහාර සහ මඟ පෙන්වන සංචාර ඇතුළත් වේ.",
-                                "සංචාරයක් කෙසේ වේද?" => "ඔබට අපේ වෙබ් අඩවිය හරහා හෝ අපේ ක්‍රියාශීලි සේවා කණ්ඩායම අමතා සංචාරයක් තේරිය හැක.",
-                                "අවලංගු කිරීමේ ප්‍රතිපත්ති/ය කුමක්ද?" => "සංචාර දිනට දින 14කට පෙර අවලංගු කිරීම් සඳහා සම්පුර්ණ නැවත්වීම් සුදුසුකම් ලැබේ. එයින් පසු අර්ධ නැවත්වීම් අදාළ වේ.",
-                                "වයස් සීමා තිබේද?" => "අපේ සංචාර සෑම වයසකටම විවෘත වන අතර, සමහර සඳහා කොන්දේසි විය හැක.",
-                                "සංචාරය සඳහා මා කුමක් ඇඳුම් දැමිය යුතුද?" => "පහසු ඇඳුම්, පා වැසුම් සහ ඔබට අවශ්‍ය පුද්ගලික අයිතම් ඇඳීමට අපි නිර්දේශ කරමු. සෑම සංචාරයකටම නිශ්චිත පැකේ ලැයිස්තු සපයනු ලැබේ.",
-                                "ආහාර සංචාර මිලට ඇතුළත් වේද?" => "ඔව්, සංචාර නිකුතුවේ සඳහන් පරිදි ආහාර ඇතුළත් වේ.",
-                                "සංචාර ගමන් රක්ෂණය කෙසේ සපයා ගත යුතුද?" => "ගමන් රක්ෂණය ඇතුළත් නොවේ, නමුත් ඔබේ දේශීය සපයන්නා මඟින් එය මිලදී ගැනීම නිර්දේශ කරමු.",
-                                "මගේ සංචාරය අභිමත කළ හැක්කේ කෙසේද?" => "ඔව්, අපි අභිමත සංචාර පැකේජ සපයමු. වැඩි විස්තර සඳහා අප අමතන්න."
-                            ]
+                            'title' => 'නිතර අසන ප්‍රශ්න',
+                            'no_faqs' => 'දැනට FAQ නොමැත.',
+                            'contact_info' => 'ඕනෑම ප්‍රශ්නයක් සඳහා අප අමතන්න.'
                         ]
                     ];
-
-                    // Use the current language or default to English
-                    $lang = isset($_SESSION['site_language']) ? $_SESSION['site_language'] : 'en';
                     ?>
 
                     <h1 class="faq-title"><?php echo $page_texts[$lang]['title']; ?></h1>
 
                     <div class="faq-list">
-                        <?php
-                        // Display FAQs based on selected language
-                        foreach ($page_texts[$lang]['faqs'] as $question => $answer) {
-                            echo "
-                            <div class='faq-item'>
-                                <div class='faq-header'>
-                                    <span class='faq-question'>{$question}</span>
-                                    <span class='faq-icon'>+</span>
+                        <?php if (mysqli_num_rows($faqs_result) > 0): ?>
+                            <?php while ($faq = mysqli_fetch_assoc($faqs_result)): ?>
+                                <div class='faq-item'>
+                                    <div class='faq-header'>
+                                        <span class='faq-question'>
+                                            <?php echo htmlspecialchars($faq['question_' . $lang]); ?>
+                                        </span>
+                                        <span class='faq-icon'>+</span>
+                                    </div>
+                                    <div class='faq-answer'>
+                                        <?php echo htmlspecialchars($faq['answer_' . $lang]); ?>
+                                    </div>
                                 </div>
-                                <div class='faq-answer'>{$answer}</div>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <!-- No FAQs available message -->
+                            <div class="no-faqs-message text-center py-5">
+                                <i class="fa fa-question-circle-o fa-3x text-muted mb-3"></i>
+                                <h3 class="text-muted"><?php echo $page_texts[$lang]['no_faqs']; ?></h3>
+                                <p class="text-muted"><?php echo $page_texts[$lang]['contact_info']; ?></p>
                             </div>
-                            ";
-                        }
-                        ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -73,7 +71,7 @@ include("header.php");
 <!-- FAQs Section End -->
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     // Get all FAQ headers
     const faqHeaders = document.querySelectorAll('.faq-header');
     
@@ -122,6 +120,74 @@ include("header.php");
 });
 </script>
 
-<?php
-include('footer.php');
-?>
+<style>
+/* Additional styles for no FAQs message */
+.no-faqs-message {
+    padding: 40px 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+/* Ensure FAQ styling remains consistent */
+.faq-item {
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.faq-header {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.faq-header:hover {
+    background: #e9ecef;
+}
+
+.faq-question {
+    font-weight: 600;
+    color: #333;
+}
+
+.faq-icon {
+    font-size: 18px;
+    font-weight: bold;
+    color: #667eea;
+    transition: transform 0.3s ease;
+}
+
+.faq-icon.rotate {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    padding: 15px 20px;
+    background: white;
+    display: none;
+    border-top: 1px solid #e0e0e0;
+    color: #666;
+    line-height: 1.6;
+}
+
+.faq-item.active .faq-header {
+    background: #667eea;
+    color: white;
+}
+
+.faq-item.active .faq-question {
+    color: white;
+}
+
+.faq-item.active .faq-icon {
+    color: white;
+}
+</style>
+
+<?php include('footer.php'); ?>
