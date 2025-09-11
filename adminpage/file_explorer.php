@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['user'])) {
+    header('Location: adminmain.php');
+    exit();
+}
 // ---- CONFIG ----
 $baseDir = "uploads/visa";
 
@@ -120,6 +125,9 @@ if (isset($_GET['folder'])) {
 </head>
 <body>
 <div class="container">
+    <div>
+            <a href="adminmain.php" class="btn btn-secondary">← Back</a>
+        </div>
     <h2>Applicant Folders Explorer</h2>
 
     <!-- Download All -->

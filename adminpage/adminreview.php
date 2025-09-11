@@ -2,11 +2,7 @@
 session_start();
 
 // Direct Database Connection - Replace with your actual database details
-$host = 'localhost';
-$dbname = 'edutouri_edutourism_lk';    // Change this to your actual database name
-$username = 'root';               // Change this to your database username
-$password = '';                   // Change this to your database password
-
+include('../homepage/db.php');
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

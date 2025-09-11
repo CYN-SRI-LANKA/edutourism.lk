@@ -1,5 +1,5 @@
 <?php
-// adminvisa.php - Visa Management System with Role-Based Access Control
+// adminvisa.php - Visa Management System with Role-Based Access Control and Dynamic Dropdowns
 session_start();
 
 // ===================================
@@ -77,16 +77,8 @@ include('../homepage/db.php');
 // Get current year for default selection
 $current_year = date('Y');
 
-// Get last added tour for default selection
-$tour_query = mysqli_query($con, "SELECT DISTINCT tourname FROM visa_applications ORDER BY created_at DESC LIMIT 1");
-$last_tour = '';
-if($tour_row = mysqli_fetch_assoc($tour_query)) {
-    $last_tour = $tour_row['tourname'];
-}
-
-// Get all available years and tours for dropdowns
+// Get all available years for dropdown
 $years_query = mysqli_query($con, "SELECT DISTINCT YEAR(created_at) as year FROM visa_applications ORDER BY year DESC");
-$tours_query = mysqli_query($con, "SELECT DISTINCT tourname FROM visa_applications ORDER BY tourname ASC");
 
 // Check if form submitted for year/tour selection
 $show_table = false;
@@ -221,6 +213,10 @@ if ($show_table) {
     <meta charset="utf-8">
     <title>Admin Panel - VMS</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    
+    <!-- jQuery for AJAX functionality -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     <style>
         body { font-family: "Segoe UI", Arial, Helvetica, sans-serif; background: #f7fafb; margin: 0; }
         .container { width: 98%; max-width: 1800px; margin: 30px auto 40px auto; background: #fff; border-radius: 12px; padding: 32px 18px; box-shadow: 0 6px 24px 3px #0002; }
@@ -273,8 +269,19 @@ if ($show_table) {
         .btn { padding: 12px 30px; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; margin: 5px; }
         .btn-primary { background: #2b8e62; color: white; }
         .btn-primary:hover { background: #248853; }
+        .btn-primary:disabled { background: #cccccc; cursor: not-allowed; }
         .btn-secondary { background: #6c757d; color: white; }
         .btn-secondary:hover { background: #545b62; }
+        
+        /* Dynamic Dropdown Styles */
+        .loading-tours {
+            color: #666;
+            font-style: italic;
+        }
+        .tour-dropdown-disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
         
         /* Table Section Styles */
         .table-section { display: none; }
@@ -322,23 +329,9 @@ if ($show_table) {
 <body>
 <div class="container">
     
-    <!-- User Information Bar -->
-    <!-- <div class="user-info-bar">
-        <div class="user-details">
-            <div>👤 <strong><?php echo htmlspecialchars($_SESSION['user']['username']); ?></strong></div>
-            <div class="user-pill">Role: <?php echo htmlspecialchars($_SESSION['user']['role']); ?></div>
-            <div class="user-pill">System: VMS (Visa Management)</div>
-            <?php if(has_role('SUPER_ADMIN')): ?>
-                <div class="user-pill" style="background: rgba(255, 215, 0, 0.3);">🛡️ Super Admin</div>
-            <?php endif; ?>
-        </div>
-        <div>
-            <a href="adminmain.php" class="logout-btn">← Dashboard</a>
-        </div>
-    </div> -->
 
     <?php if (!$show_table): ?>
-    <!-- Landing Section -->
+    <!-- Landing Section with Dynamic Dropdown -->
     <div class="landing-section">
         <div>
             <a href="adminmain.php" class="btn btn-secondary">← Back to Main</a>
@@ -346,46 +339,133 @@ if ($show_table) {
         <h1>Visa Management System</h1>
         <p style="color: #666; font-size: 18px; margin-bottom: 40px;">Select year and tour to view visa applications</p>
         
-        <form method="post">
+        <form method="post" id="vmsForm">
             <div class="form-group">
                 <label for="year">Select Year:</label>
                 <select id="year" name="year" required>
+                    <option value="">Choose Year</option>
                     <option value="<?php echo $current_year; ?>" selected><?php echo $current_year; ?> (Current)</option>
                     <?php 
-                    // Reset query for years dropdown
                     mysqli_data_seek($years_query, 0);
                     while($year_row = mysqli_fetch_assoc($years_query)): 
-                    ?>
-                        <?php if($year_row['year'] != $current_year): ?>
+                        if($year_row['year'] != $current_year): ?>
                             <option value="<?php echo $year_row['year']; ?>"><?php echo $year_row['year']; ?></option>
-                        <?php endif; ?>
-                    <?php endwhile; ?>
+                        <?php endif; 
+                    endwhile; ?>
                 </select>
             </div>
             
             <div class="form-group">
                 <label for="tour">Select Tour:</label>
-                <select id="tour" name="tour" required>
-                    <?php if($last_tour): ?>
-                        <option value="<?php echo htmlspecialchars($last_tour); ?>" selected><?php echo htmlspecialchars($last_tour); ?> (Latest)</option>
-                    <?php endif; ?>
-                    <?php 
-                    // Reset query for tours dropdown
-                    mysqli_data_seek($tours_query, 0);
-                    while($tour_row = mysqli_fetch_assoc($tours_query)): 
-                    ?>
-                        <?php if($tour_row['tourname'] != $last_tour): ?>
-                            <option value="<?php echo htmlspecialchars($tour_row['tourname']); ?>"><?php echo htmlspecialchars($tour_row['tourname']); ?></option>
-                        <?php endif; ?>
-                    <?php endwhile; ?>
+                <select id="tour" name="tour" required class="tour-dropdown-disabled">
+                    <option value="">First select a year</option>
                 </select>
             </div>
             
             <div style="margin-top: 30px;">
-                <button type="submit" class="btn btn-primary">🔍 View Applications</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn" disabled>🔍 View Applications</button>
             </div>
         </form>
     </div>
+    
+    <script>
+$(document).ready(function() {
+    // Load tours for current year on page load
+    if ($('#year').val()) {
+        loadTours($('#year').val());
+    }
+    
+    // Handle year change
+    $('#year').change(function() {
+        var selectedYear = $(this).val();
+        $('#submitBtn').prop('disabled', true);
+        
+        if (selectedYear) {
+            loadTours(selectedYear);
+        } else {
+            resetTourDropdown();
+        }
+    });
+    
+    // Handle tour selection
+    $('#tour').change(function() {
+        $('#submitBtn').prop('disabled', $(this).val() === '');
+    });
+    
+    function loadTours(year) {
+        var $tourSelect = $('#tour');
+        
+        // Show loading state
+        $tourSelect.removeClass('tour-dropdown-disabled')
+                  .html('<option value="">Loading tours...</option>')
+                  .addClass('loading-tours');
+        
+        $.ajax({
+            url: 'ajax_get_tours.php',
+            type: 'GET',
+            data: { year: year },
+            dataType: 'json',
+            success: function(tours) {
+                $tourSelect.removeClass('loading-tours').empty();
+                
+                if (tours.length > 0) {
+                    $tourSelect.append('<option value="">Select Tour</option>');
+                    
+                    $.each(tours, function(index, tour) {
+                        var tourname = typeof tour === 'string' ? tour : tour.tourname;
+                        var displayText = tourname;
+                        
+                        // If tour object has additional data, enhance display
+                        if (typeof tour === 'object') {
+                            var statusBadge = '';
+                            if (tour.tour_status === 'upcoming') {
+                                statusBadge = ' 🔥';
+                            } else if (tour.tour_status === 'past') {
+                                statusBadge = ' 📅';
+                            }
+                            
+                            // Show tour title if available
+                            if (tour.title_en && tour.title_en !== tourname) {
+                                displayText = tourname + ' (' + tour.title_en + ')' + statusBadge;
+                            } else {
+                                displayText = tourname + statusBadge;
+                            }
+                        }
+                        
+                        var option = $('<option></option>')
+                                      .val(tourname)
+                                      .text(displayText);
+                        
+                        // Select the first (latest) tour by default
+                        if (index === 0) {
+                            option.prop('selected', true);
+                            $('#submitBtn').prop('disabled', false);
+                            displayText += ' (Latest)';
+                            option.text(displayText);
+                        }
+                        
+                        $tourSelect.append(option);
+                    });
+                    
+                } else {
+                    $tourSelect.append('<option value="">No tours available for ' + year + '</option>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error:', error);
+                $tourSelect.removeClass('loading-tours')
+                          .html('<option value="">Error loading tours</option>');
+            }
+        });
+    }
+    
+    function resetTourDropdown() {
+        $('#tour').addClass('tour-dropdown-disabled')
+                 .html('<option value="">First select a year</option>');
+    }
+});
+</script>
+
     
     <?php else: ?>
     <!-- Table Section -->

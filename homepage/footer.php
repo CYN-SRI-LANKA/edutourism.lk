@@ -25,7 +25,7 @@ $footer_texts = [
         'contact' => 'Contact Us',
         'faqs' => 'FAQs',
         'guidelines' => 'Guidelines',
-        'statistics' => 'Statistics View',
+        // 'statistics' => 'Statistics View',
         'copyright' => '© 2025 EduTourism. All rights reserved.',
         'language' => 'Language:'
     ],
@@ -45,7 +45,7 @@ $footer_texts = [
         'contact' => 'අප වෙත',
         'faqs' => 'නිති ප්‍රශ්න',
         'guidelines' => 'මාර්ගෝපදේශ',
-        'statistics' => 'සංඛ්‍යාලේඛන දසුන',
+        // 'statistics' => 'සංඛ්‍යාලේඛන දසුන',
         'copyright' => '© 2025 EduTourism. සියලුම හිමිකම් ඇවිරිණි.',
         'language' => 'භාෂාව:'
     ]
@@ -117,7 +117,7 @@ $texts = $footer_texts[$lang];
                 <h5><?php echo $texts['additional']; ?></h5>
                 <ul>
                     <li><a href="guidelines/guidelinehub.php"><?php echo $texts['guidelines']; ?></a></li>
-                    <li><a href="statistics.php"><?php echo $texts['statistics']; ?></a></li>
+                    <!-- <li><a href="statistics.php"><?php echo $texts['statistics']; ?></a></li> -->
                 </ul>
             </div>
         </div>

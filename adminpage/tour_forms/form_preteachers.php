@@ -12,10 +12,10 @@ include("../../homepage/db.php");
 include("../../homepage/functions.php");
 
 // Tour-specific information (will be replaced by actual values)
-$tour_name = '{{TOUR_NAME}}';
-$tour_title = '{{TOUR_TITLE}}';
-$destination = '{{DESTINATION}}';
-$duration = '{{DURATION}}';
+$tour_name = 'preteachers';
+$tour_title = 'Pre school Teacher';
+$destination = 'Malaysia';
+$duration = '6';
 
 // NEW: Fetch tour year from tours table
 $tour_year = null;
@@ -465,10 +465,10 @@ if ($existing_data) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- ADDED: Icon support -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="icon/apple-touch-icon.png">
-    <link rel="icon" type="icon/favicon-32x32.png" sizes="32x32" href="../assets/icons/favicon-32x32.png">
-    <link rel="icon" type="icon/favicon-16x16.png" sizes="16x16" href="../assets/icons/favicon-16x16.png">
-    <link rel="manifest" href="icon/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/favicon-16x16.png">
+    <link rel="manifest" href="../assets/icons/site.webmanifest">
     
     <style>
         /* Enhanced CSS with field validation and animations */
@@ -975,8 +975,28 @@ if ($existing_data) {
 <body>
 
 <div class="container">
+    <!-- Tour Information Header -->
+    <div class="tour-info">
+        <h2><?php echo htmlspecialchars($tour_title); ?></h2>
+        <p>Complete your application for this amazing tour experience</p>
+        <div class="tour-details">
+            <div class="tour-detail">
+                <i class="fa fa-map-marker"></i>
+                <span><?php echo htmlspecialchars($destination); ?></span>
+            </div>
+            <div class="tour-detail">
+                <i class="fa fa-calendar"></i>
+                <span><?php echo $duration; ?> Days</span>
+            </div>
+            <div class="tour-detail">
+                <i class="fa fa-tag"></i>
+                <span><?php echo htmlspecialchars($tour_name); ?></span>
+            </div>
+        </div>
+    </div>
+
     <h1 class="page-title">
-        📄 Visa Document Submission
+        📄 Visa & Airticket Document Submission
         <small>Tour: <?php echo htmlspecialchars($tour_title); ?></small>
         <?php if ($editing): ?>
             <small>✏️ Editing Application for NIC: <?php echo htmlspecialchars($existing_data['nic_number']); ?></small>

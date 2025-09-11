@@ -8,4 +8,8 @@ if (!$con) {
 // Set charset to handle special characters
 mysqli_set_charset($con, "utf8mb4");
 
+$host = 'localhost';
+$dbname = 'edutouri_edutourism_lk';
+$username = 'root';              
+$password = '';   
 

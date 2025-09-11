@@ -69,6 +69,7 @@ $past_tours_result = mysqli_query($con, $past_tours_sql);
             <?php if (mysqli_num_rows($past_tours_result) > 0): ?>
                 <?php while ($tour = mysqli_fetch_assoc($past_tours_result)): ?>
                     <div class="tour-card" data-destination="<?php echo $tour['tourname']; ?>" data-category="<?php echo $tour['category']; ?>">
+                        <a href = "https://cynsrilanka.org/gallery">
                         <div class="tour-card-inner">
                             <div class="tour-card-image">
                                 <?php if ($tour['tour_type'] == 'combined'): ?>
@@ -139,7 +140,7 @@ $past_tours_result = mysqli_query($con, $past_tours_sql);
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div></a>
                     </div>
                 <?php endwhile; ?>
             <?php else: ?>

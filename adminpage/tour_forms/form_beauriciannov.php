@@ -8,14 +8,15 @@ if (!isset($_SESSION['user'])) {
 }
 
 $active = "Account";
-include("../../homepage/db.php");
-include("../../homepage/functions.php");
+include("../../homepage/db.php");  // CHANGED: Added extra ../
+include("../../homepage/functions.php");  // CHANGED: Added extra ../
 
 // Tour-specific information (will be replaced by actual values)
-$tour_name = '{{TOUR_NAME}}';
-$tour_title = '{{TOUR_TITLE}}';
-$destination = '{{DESTINATION}}';
-$duration = '{{DURATION}}';
+$tour_name = 'beauriciannov';
+$tour_title = 'Beautician ';
+$destination = 'Malaysia';
+$duration = '5';
+//$tour_id = 12;
 
 // NEW: Fetch tour year from tours table
 $tour_year = null;
@@ -52,45 +53,6 @@ if (isset($_POST['search_nic']) && !empty($_POST['search_nic'])) {
         $editing = true;
         $nic_search = $nic;
     }
-}
-
-// Function to check if field should be conditionally required
-function isFieldConditionallyRequired($field_name, $employment_status, $dependent_status = null) {
-    // Always required fields
-    $always_required = [
-        'nic_number', 'nameforthecertificates', 'nameforthetourid', 'address_line1',
-        'city', 'postalCode', 'province', 'surname', 'othername', 'birthYear', 
-        'birthMonth', 'birthDay', 'gender', 'passportNumber', 'issueYear', 
-        'issueMonth', 'issueDay', 'expiryYear', 'expiryMonth', 'expiryDay',
-        'passportCopy', 'photoId', 'visaRequestLetter', 'bankStatements', 'employmentStatus'
-    ];
-    
-    if (in_array($field_name, $always_required)) {
-        return true;
-    }
-    
-    // Conditional requirements based on employment status
-    switch($employment_status) {
-        case 'employee':
-            return in_array($field_name, ['employmentLetter', 'paySlips']);
-            
-        case 'business':
-            return in_array($field_name, ['businessRegistration']);
-            
-        case 'freelancer':
-            return in_array($field_name, ['serviceLetters']);
-            
-        case 'student':
-            $student_required = ['dependentStatus'];
-            if ($dependent_status == 'student') {
-                $student_required[] = 'studentLetter';
-            } elseif ($dependent_status == 'dependent') {
-                $student_required[] = 'dependentConfirmationDependent';
-            }
-            return in_array($field_name, $student_required);
-    }
-    
-    return false;
 }
 
 // Handle form submissions
@@ -465,10 +427,10 @@ if ($existing_data) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- ADDED: Icon support -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="icon/apple-touch-icon.png">
-    <link rel="icon" type="icon/favicon-32x32.png" sizes="32x32" href="../assets/icons/favicon-32x32.png">
-    <link rel="icon" type="icon/favicon-16x16.png" sizes="16x16" href="../assets/icons/favicon-16x16.png">
-    <link rel="manifest" href="icon/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/favicon-16x16.png">
+    <link rel="manifest" href="../assets/icons/site.webmanifest">
     
     <style>
         /* Enhanced CSS with field validation and animations */
@@ -506,8 +468,8 @@ if ($existing_data) {
 
         /* Tour Information Header */
         .tour-info {
-            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
-            color: black;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             padding: 25px;
             border-radius: 12px;
             margin-bottom: 30px;
@@ -975,8 +937,28 @@ if ($existing_data) {
 <body>
 
 <div class="container">
+    <!-- Tour Information Header -->
+    <div class="tour-info">
+        <h2><?php echo htmlspecialchars($tour_title); ?></h2>
+        <p>Complete your application for this amazing tour experience</p>
+        <div class="tour-details">
+            <div class="tour-detail">
+                <i class="fa fa-map-marker"></i>
+                <span><?php echo htmlspecialchars($destination); ?></span>
+            </div>
+            <div class="tour-detail">
+                <i class="fa fa-calendar"></i>
+                <span><?php echo $duration; ?> Days</span>
+            </div>
+            <div class="tour-detail">
+                <i class="fa fa-tag"></i>
+                <span><?php echo htmlspecialchars($tour_name); ?></span>
+            </div>
+        </div>
+    </div>
+
     <h1 class="page-title">
-        📄 Visa Document Submission
+        📄 Visa & Airticket Document Submission
         <small>Tour: <?php echo htmlspecialchars($tour_title); ?></small>
         <?php if ($editing): ?>
             <small>✏️ Editing Application for NIC: <?php echo htmlspecialchars($existing_data['nic_number']); ?></small>
@@ -1395,7 +1377,7 @@ if ($existing_data) {
                             <p>Uploading...</p>
                         </div>
                         <span class="upload-icon">📝</span>
-                        <h4>Upload Employment Confirmation Letter with Leave Confirmation <span style="color: var(--error-color);">*</span></h4>
+                        <h4>Upload Employment Confirmation Letter with Leave Confirmation</h4>
                         <p>Drag and drop your files here or click to browse</p>
                         <p style="font-size: 14px; color: var(--dark-gray);">Accepted formats: JPG, PDF (Max size: 2MB each)</p>
                         <input type="file" id="employmentLetter" name="employmentLetter[]" multiple accept=".jpg,.jpeg,.pdf">
@@ -1429,7 +1411,7 @@ if ($existing_data) {
                             <p>Uploading...</p>
                         </div>
                         <span class="upload-icon">💰</span>
-                        <h4>Upload Pay Slips of Last 3 Months <span style="color: var(--error-color);">*</span></h4>
+                        <h4>Upload Pay Slips of Last 3 Months</h4>
                         <p>Drag and drop your files here or click to browse</p>
                         <p style="font-size: 14px; color: var(--dark-gray);">Accepted formats: JPG, PDF (Max size: 2MB each)</p>
                         <input type="file" id="paySlips" name="paySlips[]" multiple accept=".jpg,.jpeg,.pdf">
@@ -1466,7 +1448,7 @@ if ($existing_data) {
                             <p>Uploading...</p>
                         </div>
                         <span class="upload-icon">🏢</span>
-                        <h4>Upload Original Business Registration and English Translation <span style="color: var(--error-color);">*</span></h4>
+                        <h4>Upload Original Business Registration and English Translation</h4>
                         <p>Drag and drop your files here or click to browse</p>
                         <p style="font-size: 14px; color: var(--dark-gray);">Accepted formats: JPG, PDF (Max size: 2MB each)</p>
                         <input type="file" id="businessRegistration" name="businessRegistration[]" multiple accept=".jpg,.jpeg,.pdf">
@@ -1537,7 +1519,7 @@ if ($existing_data) {
                             <p>Uploading...</p>
                         </div>
                         <span class="upload-icon">📝</span>
-                        <h4>Upload Service Letters from Clients <span style="color: var(--error-color);">*</span></h4>
+                        <h4>Upload Service Letters from Clients</h4>
                         <p>Drag and drop your files here or click to browse</p>
                         <p style="font-size: 14px; color: var(--dark-gray);">Accepted formats: JPG, PDF (Max size: 2MB each)</p>
                         <input type="file" id="serviceLetters" name="serviceLetters[]" multiple accept=".jpg,.jpeg,.pdf">
@@ -1575,12 +1557,12 @@ if ($existing_data) {
                         
                         <div class="radio-group">
                             <label>
-                                <input type="radio" name="dependentStatus" value="student" onclick="showDependentSection('student')"
+                                <input type="radio" name="dependentStatus" value="student" onclick="showDependentSection('student')" required
                                        <?php echo ($existing_data && $existing_data['dependent_status'] == 'student') ? 'checked' : ''; ?>>
                                 <span>🎓 Student</span>
                             </label>
                             <label>
-                                <input type="radio" name="dependentStatus" value="dependent" onclick="showDependentSection('dependent')"
+                                <input type="radio" name="dependentStatus" value="dependent" onclick="showDependentSection('dependent')" required
                                        <?php echo ($existing_data && $existing_data['dependent_status'] == 'dependent') ? 'checked' : ''; ?>>
                                 <span>👨‍👩‍👧‍👦 Dependent</span>
                             </label>
@@ -1595,7 +1577,7 @@ if ($existing_data) {
                                 <p>Uploading...</p>
                             </div>
                             <span class="upload-icon">🎓</span>
-                            <h4>Upload Student Confirmation Letter <span style="color: var(--error-color);">*</span></h4>
+                            <h4>Upload Student Confirmation Letter</h4>
                             <p>Drag and drop your files here or click to browse</p>
                             <p style="font-size: 14px; color: var(--dark-gray);">Accepted formats: JPG, PDF (Max size: 2MB each)</p>
                             <input type="file" id="studentLetter" name="studentLetter[]" multiple accept=".jpg,.jpeg,.pdf">
@@ -1666,7 +1648,7 @@ if ($existing_data) {
                                 <p>Uploading...</p>
                             </div>
                             <span class="upload-icon">👨‍👩‍👧‍👦</span>
-                            <h4>Upload Dependent Confirmation Letter <span style="color: var(--error-color);">*</span></h4>
+                            <h4>Upload Dependent Confirmation Letter</h4>
                             <p>Drag and drop your files here or click to browse</p>
                             <p style="font-size: 14px; color: var(--dark-gray);">Accepted formats: JPG, PDF (Max size: 2MB each)</p>
                             <input type="file" id="dependentConfirmationDependent" name="dependentConfirmation[]" multiple accept=".jpg,.jpeg,.pdf">
@@ -1728,10 +1710,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitBtn = document.getElementById('submitBtn');
     const isEditing = <?php echo $editing ? 'true' : 'false'; ?>;
     
-    // Enhanced field validation with conditional requirements
+    // Enhanced field validation
     function validateField(field) {
         const value = field.value.trim();
-        const isRequired = field.hasAttribute('required') || isFieldConditionallyRequired(field);
+        const isRequired = field.hasAttribute('required');
         
         if (isRequired && value === '') {
             field.classList.add('error');
@@ -1745,48 +1727,6 @@ document.addEventListener('DOMContentLoaded', function() {
             field.classList.remove('valid', 'error');
             return !isRequired;
         }
-    }
-
-    // Check if field is conditionally required based on employment status
-    function isFieldConditionallyRequired(field) {
-        const employmentStatus = form.querySelector('input[name="employmentStatus"]:checked');
-        const dependentStatus = form.querySelector('input[name="dependentStatus"]:checked');
-        const fieldName = field.name || field.id;
-        
-        if (!employmentStatus) return false;
-        
-        const status = employmentStatus.value;
-        const depStatus = dependentStatus ? dependentStatus.value : null;
-        
-        // Check if field is in visible section and required for that employment type
-        switch(status) {
-            case 'employee':
-                if (document.getElementById('employeeSection').style.display === 'block') {
-                    return ['employmentLetter', 'paySlips'].includes(fieldName);
-                }
-                break;
-            case 'business':
-                if (document.getElementById('businessSection').style.display === 'block') {
-                    return ['businessRegistration'].includes(fieldName);
-                }
-                break;
-            case 'freelancer':
-                if (document.getElementById('freelancerSection').style.display === 'block') {
-                    return ['serviceLetters'].includes(fieldName);
-                }
-                break;
-            case 'student':
-                if (document.getElementById('studentDependentSection').style.display === 'block') {
-                    if (depStatus === 'student') {
-                        return ['dependentStatus', 'studentLetter'].includes(fieldName);
-                    } else if (depStatus === 'dependent') {
-                        return ['dependentStatus', 'dependentConfirmationDependent'].includes(fieldName);
-                    }
-                    return fieldName === 'dependentStatus';
-                }
-                break;
-        }
-        return false;
     }
 
     // Validate radio groups
@@ -1808,25 +1748,22 @@ document.addEventListener('DOMContentLoaded', function() {
         return isChecked;
     }
 
-    // Validate file inputs with conditional requirements
+    // Validate file inputs
     function validateFileInput(input) {
-        const isRequired = input.hasAttribute('required') || isFieldConditionallyRequired(input);
+        const isRequired = input.hasAttribute('required');
         const hasFiles = input.files && input.files.length > 0;
         const hasExistingFile = input.closest('.file-upload').classList.contains('uploaded');
         
         if (isRequired && !hasFiles && !hasExistingFile) {
             input.classList.add('error');
-            input.closest('.file-upload').classList.add('error');
             input.classList.remove('valid');
             return false;
         } else if (hasFiles || hasExistingFile) {
             input.classList.add('valid');
-            input.closest('.file-upload').classList.remove('error');
             input.classList.remove('error');
             return true;
         } else {
             input.classList.remove('valid', 'error');
-            input.closest('.file-upload').classList.remove('error');
             return !isRequired;
         }
     }
@@ -1880,7 +1817,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }, 500);
                     
                     // Mark as valid
-                    validateFileInput(input);
+                    input.classList.add('valid');
                 }, 1500);
             }
         });
@@ -1919,23 +1856,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (status === 'student_dependent') {
             document.getElementById('studentDependentSection').style.display = 'block';
         }
-        
-        // Revalidate all fields after section change
-        setTimeout(() => {
-            formFields.forEach(field => {
-                if (!field.classList.contains('locked')) {
-                    validateField(field);
-                }
-            });
-            // Validate file inputs in visible sections
-            fileInputs.forEach(inputId => {
-                const input = document.getElementById(inputId);
-                if (input && input.closest('.employment-section') && 
-                    input.closest('.employment-section').style.display === 'block') {
-                    validateFileInput(input);
-                }
-            });
-        }, 100);
     };
     
     // Dependent status section management
@@ -1951,18 +1871,9 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (status === 'dependent' && dependentSub) {
             dependentSub.style.display = 'block';
         }
-        
-        // Revalidate fields after dependent section change
-        setTimeout(() => {
-            formFields.forEach(field => {
-                if (!field.classList.contains('locked')) {
-                    validateField(field);
-                }
-            });
-        }, 100);
     };
     
-    // Form submission handling with enhanced validation
+    // Form submission handling with validation
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -1980,13 +1891,26 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Validate required radio groups
-        if (!validateRadioGroup('employmentStatus')) {
-            isValid = false;
-            errors.push('Employment status selection is required');
-        }
+        // Validate radio groups
+        const radioGroups = ['employmentStatus'];
+        radioGroups.forEach(groupName => {
+            if (!validateRadioGroup(groupName)) {
+                isValid = false;
+                errors.push('Employment status selection is required');
+            }
+        });
         
-        // Validate dependent status if student is selected
+        // Validate file inputs
+        const fileInputs = form.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            if (!validateFileInput(input)) {
+                isValid = false;
+                const label = input.closest('.form-group').querySelector('label').textContent;
+                errors.push(`${label.replace('*', '').trim()} is required`);
+            }
+        });
+        
+        // Check dependent status if student/dependent is selected
         const employmentStatus = form.querySelector('input[name="employmentStatus"]:checked');
         if (employmentStatus && employmentStatus.value === 'student') {
             if (!validateRadioGroup('dependentStatus')) {
@@ -1994,19 +1918,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 errors.push('Student/Dependent status selection is required');
             }
         }
-        
-        // Validate file inputs (only in visible sections)
-        const fileInputsToValidate = form.querySelectorAll('input[type="file"]');
-        fileInputsToValidate.forEach(input => {
-            const section = input.closest('.employment-section');
-            const isInVisibleSection = !section || section.style.display === 'block';
-            
-            if (isInVisibleSection && !validateFileInput(input)) {
-                isValid = false;
-                const labelText = input.closest('.file-upload').querySelector('h4').textContent;
-                errors.push(`${labelText.replace('*', '').trim()} is required`);
-            }
-        });
         
         if (!isValid) {
             // Show validation errors
