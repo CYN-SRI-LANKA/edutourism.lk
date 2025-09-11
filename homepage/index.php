@@ -171,7 +171,6 @@ $(document).ready(function() {
 
 .no-tours-message {
     padding: 40px 20px;
-    background: #f8f9fa;
     border-radius: 10px;
     margin: 20px;
 }

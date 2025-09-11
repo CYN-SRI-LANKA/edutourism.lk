@@ -88,7 +88,7 @@ $texts = $footer_texts[$lang];
                         </a>
                     </li>
                     <li>
-                        <a href="https://maps.google.com/?q=<?php echo urlencode($texts['address']); ?>" target="_blank" rel="noopener" class="contact-link" aria-label="View address on Google Maps">
+                        <a href="https://maps.app.goo.gl/5LBALSyHDfszwLou5" target="_blank" rel="noopener" class="contact-link" aria-label="View address on Google Maps">
                             <?php echo $texts['address']; ?>
                         </a>
                     </li>
@@ -102,7 +102,7 @@ $texts = $footer_texts[$lang];
                 <h5><?php echo $texts['quick_links']; ?></h5>
                 <ul>
                     <li><a href="index.php"><?php echo $texts['home']; ?></a></li>
-                    <li><a href="past-tours.php"><?php echo $texts['past_tours']; ?></a></li>
+                    <li><a href="pasttours.php"><?php echo $texts['past_tours']; ?></a></li>
                     <?php if (isset($_SESSION['customer_email']) && $_SESSION['customer_email'] != 'unset'): ?>
                         <li><a href="downloads.php"><?php echo $texts['downloads']; ?></a></li>
                     <?php endif; ?>

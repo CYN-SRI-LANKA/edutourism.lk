@@ -166,7 +166,7 @@ include("header.php");
                         $user_msg = $_POST['message'];
 
                         // Email details
-                        $to = 'contact@edutourism.lk'; // Replace with your email
+                        $to = 'info@edutourism.lk';
                         $headers = "From: $user_email" . "\r\n" .
                                   "Reply-To: $user_email" . "\r\n" .
                                   "X-Mailer: PHP/" . phpversion();
