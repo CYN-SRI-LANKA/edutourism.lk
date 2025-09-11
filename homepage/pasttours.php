@@ -147,8 +147,9 @@ $past_tours_result = mysqli_query($con, $past_tours_sql);
                 <div class="no-tours-message">
                     <div class="text-center">
                         <i class="fa fa-calendar-times-o fa-4x text-muted mb-3"></i>
-                        <h4><?php echo $tour_texts[$lang]['no_tours']; ?></h4>
-                        <p><?php echo $tour_texts[$lang]['contact_us']; ?></p>
+                        <h4 class="text-muted"><?php echo $tour_texts[$lang]['no_tours']; ?><br></h4>
+                        <a href="https://cynsrilanka.org/gallery"><h5>See the gallery</h5></a>
+                        <p class="text-muted"><?php echo $tour_texts[$lang]['contact_us']; ?></p>
                     </div>
                 </div>
             <?php endif; ?>
