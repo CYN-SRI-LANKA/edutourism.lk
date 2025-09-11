@@ -22,25 +22,13 @@ Edutourism.lk is a comprehensive platform for managing study tours and education
 
 🚀 Tech Stack
 
-Frontend: [React.js / Next.js]
+Languages: PHP, JS
 
-Backend: [Node.js / Express / Laravel] (adjust to your stack)
-
-Database: [MySQL / PostgreSQL / MongoDB]
-
-Hosting: [Vercel / AWS / DigitalOcean]
-
-Other Tools: GitHub Actions (CI/CD), Docker (optional)
+Database: MySQL
 
 
-edutourism.lk/
-│── public/          # Static files (images, icons, tour materials)
-│── src/             # Main source code
-│   ├── components/  # Reusable UI components
-│   ├── pages/       # Application pages (Tours, CRM, Tasks, Visa, etc.)
-│   ├── services/    # API and backend service calls
-│   └── utils/       # Helper functions
-│── docs/            # Project documentation & tour resources
-│── .env.example     # Example environment configuration
-│── package.json     # Dependencies & scripts
-└── README.md        # Project readme
+Developer Team : Mr.Tharusha Gimsara (full-stack lead), Ms.Lanka Karunathilaka(front-end lead)
+Author: Ceylon Edutourism PVT LTD
+Sponsored By: Commonwealth Youth Network Sri Lanka
+
+© 2025 EduTourism. All rights reserved.
