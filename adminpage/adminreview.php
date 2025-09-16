@@ -23,23 +23,30 @@ if (!file_exists('uploads/reviews/thumbnails')) {
     mkdir('uploads/reviews/thumbnails', 0755, true);
 }
 
-// Rest of your code continues here...
-
-
-// <?php
-// session_start();
-// include('../homepage/db.php');
-
-$action = $_GET['action'] ?? 'list';
-$message = '';
-$error = '';
-
-// Create upload directories if they don't exist
-if (!file_exists('uploads/reviews')) {
-    mkdir('uploads/reviews', 0755, true);
+// YouTube URL validation function
+function validateYouTubeURL($url) {
+    if (empty($url)) return '';
+    
+    // Extract video ID from various YouTube URL formats
+    $pattern = '/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/';
+    
+    if (preg_match($pattern, $url, $matches)) {
+        return 'https://www.youtube.com/watch?v=' . $matches[1];
+    }
+    
+    return false;
 }
-if (!file_exists('uploads/reviews/thumbnails')) {
-    mkdir('uploads/reviews/thumbnails', 0755, true);
+
+function getYouTubeEmbedURL($url) {
+    if (empty($url)) return '';
+    
+    $pattern = '/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/';
+    
+    if (preg_match($pattern, $url, $matches)) {
+        return 'https://www.youtube.com/embed/' . $matches[1];
+    }
+    
+    return '';
 }
 
 // Handle form submissions
@@ -50,8 +57,18 @@ if ($_POST) {
         $organization = trim($_POST['organization']);
         $content_en = trim($_POST['content_en']);
         $content_si = trim($_POST['content_si']);
-
+        $youtube_link = trim($_POST['youtube_link']);
         $status = $_POST['status'];
+        
+        // Validate YouTube URL if provided
+        if ($youtube_link && !empty($youtube_link)) {
+            $validated_youtube = validateYouTubeURL($youtube_link);
+            if (!$validated_youtube) {
+                $error = 'Invalid YouTube URL format. Please use a valid YouTube video URL.';
+            } else {
+                $youtube_link = $validated_youtube;
+            }
+        }
         
         // Handle file upload
         $profile_image = '';
@@ -82,9 +99,9 @@ if ($_POST) {
         }
         
         if (!$error) {
-            $stmt = $pdo->prepare("INSERT INTO reviews (name, position, organization, content_en, content_si, profile_image, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $pdo->prepare("INSERT INTO reviews (name, position, organization, content_en, content_si, profile_image, youtube_link, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             
-            if ($stmt->execute([$name, $position, $organization, $content_en, $content_si, $profile_image, $status])) {
+            if ($stmt->execute([$name, $position, $organization, $content_en, $content_si, $profile_image, $youtube_link, $status])) {
                 $message = 'Review added successfully!';
             } else {
                 $error = 'Failed to add review to database.';
@@ -145,6 +162,9 @@ function createThumbnail($source, $destination, $width, $height) {
         case 'image/jpeg':
             $image = imagecreatefromjpeg($source);
             break;
+        case 'image/jpg':
+        $image = imagecreatefromjpeg($source);
+            break;
         case 'image/png':
             $image = imagecreatefrompng($source);
             break;
@@ -200,7 +220,6 @@ function createThumbnail($source, $destination, $width, $height) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         .admin-header {
-            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
             color: black;
             padding: 2rem 0;
             margin-bottom: 2rem;
@@ -239,17 +258,29 @@ function createThumbnail($source, $destination, $width, $height) {
             font-size: 2rem;
             color: #6c757d;
         }
+        .youtube-preview {
+            margin-top: 10px;
+        }
+        .youtube-preview iframe {
+            width: 100%;
+            height: 150px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body class="bg-light">
 
 <div class="admin-header">
     <div class="container">
-        <h1>Review Management System</h1>
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1>Review Management System</h1>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="adminmain.php" class="btn btn-outline-primary"><i class="fas fa-arrow-left"></i> Main Admin</a>
+            </div>
+        </div>
     </div>
-    <div class="col-md-6 text-end">
-                    <a href="adminmain.php" class="btn"><i class="fas fa-arrow-left"></i> Main Admin</a>
-                </div>
 </div>
 
 <div class="container">
@@ -329,6 +360,23 @@ function createThumbnail($source, $destination, $width, $height) {
                             <?php if ($review['content_si']): ?>
                             <strong>Sinhala:</strong>
                             <p class="small"><?php echo substr(htmlspecialchars($review['content_si']), 0, 100) . (strlen($review['content_si']) > 100 ? '...' : ''); ?></p>
+                            <?php endif; ?>
+                            
+                            <?php if ($review['youtube_link']): ?>
+                            <div class="mt-2">
+                                <strong>YouTube Video:</strong><br>
+                                <a href="<?php echo htmlspecialchars($review['youtube_link']); ?>" target="_blank" class="btn btn-sm btn-outline-danger">
+                                    <i class="fab fa-youtube"></i> View Video
+                                </a>
+                                <?php 
+                                $embedURL = getYouTubeEmbedURL($review['youtube_link']);
+                                if ($embedURL): 
+                                ?>
+                                <div class="youtube-preview mt-2">
+                                    <iframe src="<?php echo $embedURL; ?>" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                                <?php endif; ?>
+                            </div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -410,7 +458,24 @@ function createThumbnail($source, $destination, $width, $height) {
                                 <input type="text" class="form-control" id="organization" name="organization">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="youtube_link" class="form-label">YouTube Video Link</label>
+                                <input type="url" class="form-control" id="youtube_link" name="youtube_link" 
+                                       placeholder="https://www.youtube.com/watch?v=...">
+                                <div class="form-text">Optional: Add a YouTube video testimonial link</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="mb-3">
+                                <label for="profile_image" class="form-label">Profile Image</label>
+                                <input type="file" class="form-control" id="profile_image" name="profile_image" accept="image/*">
+                                <div class="form-text">Upload JPG, PNG, or GIF files only. Maximum file size: 2MB</div>
+                                <div id="imagePreview" class="mt-2"></div>
+                            </div>
                         </div>
                         <div class="col-md-3">
                             <div class="mb-3">
@@ -422,13 +487,6 @@ function createThumbnail($source, $destination, $width, $height) {
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="profile_image" class="form-label">Profile Image</label>
-                        <input type="file" class="form-control" id="profile_image" name="profile_image" accept="image/*">
-                        <div class="form-text">Upload JPG, PNG, or GIF files only. Maximum file size: 2MB</div>
-                        <div id="imagePreview" class="mt-2"></div>
                     </div>
                     
                     <div class="mb-3">

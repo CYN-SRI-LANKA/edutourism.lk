@@ -5,13 +5,12 @@
     --text-color: #333333;
     --light-gray: #f5f5f5;
     --medium-gray: #e0e0e0;
-    --dark-gray: #888888;
     --white: #ffffff;
     --shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
 }
 
-/* Global Link Reset - Remove all underlines */
+/* Global Link Reset */
 a, a:hover, a:focus, a:active, a:visited {
     text-decoration: none !important;
 }
@@ -22,11 +21,6 @@ body {
     color: var(--text-color);
     margin: 0;
     padding: 0;
-}
-
-a {
-    text-decoration: none !important;
-    transition: var(--transition);
 }
 
 /* Main Header */
@@ -58,10 +52,6 @@ a {
     width: auto;
 }
 
-.logo a, .logo a:hover, .logo a:focus {
-    text-decoration: none !important;
-}
-
 /* Header Actions */
 .header-actions {
     display: flex;
@@ -70,10 +60,6 @@ a {
 }
 
 /* Language Switcher */
-.lang-switcher {
-    position: relative;
-}
-
 .lang-switcher select {
     appearance: none;
     background-color: transparent;
@@ -99,10 +85,6 @@ a {
     padding: 0;
 }
 
-.nav-menu {
-    display: block;
-}
-
 .nav-menu ul {
     list-style: none;
     margin: 0;
@@ -122,35 +104,16 @@ a {
     font-weight: 500;
     transition: var(--transition);
     text-decoration: none !important;
-    text-decoration-line: none !important;
-    text-decoration-color: transparent !important;
-    text-decoration-style: none !important;
 }
 
 .nav-menu ul li a:hover,
 .nav-menu ul li a:focus,
-.nav-menu ul li a:active,
-.nav-menu ul li a:visited,
 .nav-menu ul li.active a {
     background-color: rgba(255, 255, 255, 0.1);
     text-decoration: none !important;
-    text-decoration-line: none !important;
-    text-decoration-color: transparent !important;
-    text-decoration-style: none !important;
 }
 
-/* Bootstrap and Framework Overrides */
-.nav-menu a, .nav-menu a:hover, .nav-menu a:focus, .nav-menu a:active,
-.navbar-nav .nav-link, .navbar-nav .nav-link:hover,
-.nav-link, .nav-link:hover, .nav-link:focus,
-ul li a, ul li a:hover, ul li a:focus, ul li a:active {
-    text-decoration: none !important;
-    text-decoration-line: none !important;
-    text-decoration-color: transparent !important;
-    text-decoration-style: none !important;
-}
-
-/* Desktop navigation visible by default */
+/* Desktop navigation */
 @media (min-width: 768px) {
     .nav-menu-container {
         position: static;
@@ -171,7 +134,8 @@ ul li a, ul li a:hover, ul li a:focus, ul li a:active {
     width: 30px;
     height: 21px;
     cursor: pointer;
-    z-index: 100;
+    z-index: 1001;
+    margin-right: 10px; /* Prevent cutoff on mobile */
 }
 
 .mobile-menu-btn span {
@@ -204,12 +168,9 @@ ul li a, ul li a:hover, ul li a:focus, ul li a:active {
 
 /* Mobile Menu Styles */
 @media (max-width: 767px) {
-    .header-inner {
-        position: relative;
-    }
-
     .header-actions {
         gap: 10px;
+        padding-right: 5px; /* Extra safety margin */
     }
 
     .lang-switcher select {
@@ -220,7 +181,19 @@ ul li a, ul li a:hover, ul li a:focus, ul li a:active {
     /* Display mobile menu button */
     .mobile-menu-btn {
         display: flex;
+    }
+
+    /* Position burger button over the mobile menu when active */
+    .mobile-menu-btn.active {
+        position: fixed;
+        top: 20px;
+        right: 20px;
         z-index: 1001;
+    }
+
+    /* Change all spans to white when menu is active */
+    .mobile-menu-btn.active span {
+        background-color: var(--white);
     }
 
     /* Transform hamburger to X when active */
@@ -235,6 +208,7 @@ ul li a, ul li a:hover, ul li a:focus, ul li a:active {
     .mobile-menu-btn.active span:nth-child(3) {
         transform: translateY(-9px) rotate(-45deg);
     }
+
 
     /* Mobile Navigation Container */
     .nav-menu-container {
@@ -254,12 +228,6 @@ ul li a, ul li a:hover, ul li a:focus, ul li a:active {
 
     .nav-menu-container.active {
         right: 0;
-    }
-
-    .nav-menu {
-        display: block;
-        width: 100%;
-        height: auto;
     }
 
     .nav-menu ul {
@@ -286,7 +254,6 @@ ul li a, ul li a:hover, ul li a:focus, ul li a:active {
 
     .nav-menu ul li a {
         padding: 18px 25px;
-        text-decoration: none !important;
         color: var(--white);
         font-size: 16px;
         font-weight: 500;
@@ -308,9 +275,7 @@ ul li a, ul li a:hover, ul li a:focus, ul li a:active {
     }
 
     .nav-menu ul li a:hover,
-    .nav-menu ul li a:focus,
-    .nav-menu ul li a:active {
-        text-decoration: none !important;
+    .nav-menu ul li a:focus {
         background-color: rgba(255, 255, 255, 0.1);
         padding-left: 35px;
     }
@@ -320,44 +285,6 @@ ul li a, ul li a:hover, ul li a:focus, ul li a:active {
         transform: scaleY(1);
     }
 
-    /* Close button */
-    .mobile-menu-close {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: none;
-        border: none;
-        color: var(--white);
-        font-size: 24px;
-        cursor: pointer;
-        z-index: 1001;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        transition: background-color 0.3s ease;
-    }
-
-    .mobile-menu-close:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    /* Mobile Button Fixes */
-    .action-btn {
-        width: auto !important;
-        height: auto !important;
-        padding: 6px 10px !important;
-    }
-
-    .action-btn i {
-        margin-right: 5px !important;
-    }
-
-    .user-actions .action-btn span {
-        display: inline-block !important;
-    }
 
     /* Prevent body scroll when menu is open */
     body.menu-open {
@@ -373,32 +300,20 @@ ul li a, ul li a:hover, ul li a:focus, ul li a:active {
     }
 }
 
+/* Extra small screens */
 @media (max-width: 575px) {
     .logo img {
         max-height: 50px;
     }
 
+    .mobile-menu-btn {
+        margin-right: 15px; /* More space on very small screens */
+    }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
     .header-actions {
-        justify-content: flex-end;
-    }
-
-    /* Keep text visible on mobile */
-    .action-btn {
-        width: auto;
-        height: auto;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 6px 10px;
-        font-size: 12px;
-    }
-
-    .action-btn i {
-        margin-right: 3px;
-        font-size: 14px;
-    }
-
-    .action-btn span {
-        display: inline-block;
+        padding-right: 10px;
     }
 }

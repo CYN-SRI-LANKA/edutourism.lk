@@ -407,7 +407,7 @@ input:focus, select:focus {
 
 <!-- Add Employee Form -->
 <div class="section">
-    <h2>➕ Add New Employee</h2>
+    <h2>Add New Employee</h2>
     <form method="post" class="form-inline">
         <div class="form-group">
             <label>Full Name</label>
@@ -440,7 +440,7 @@ input:focus, select:focus {
 
 <!-- Employees List -->
 <div class="section">
-    <h2>👥 Employees</h2>
+    <h2>Employees</h2>
     <div style="overflow-x: auto;">
         <table class="table">
             <thead>
@@ -504,7 +504,7 @@ input:focus, select:focus {
 
 <!-- Attendance Overview -->
 <div class="section">
-    <h2>📅 Attendance Overview</h2>
+    <h2>Attendance Overview</h2>
     <form method="get" class="form-inline">
         <div class="form-group">
             <label>Select Month</label>

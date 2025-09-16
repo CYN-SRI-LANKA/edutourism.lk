@@ -1,5 +1,4 @@
 <?php
-
 // Check if language is submitted via GET or POST
 if (isset($_GET['lang'])) {
     $lang = $_GET['lang'];
@@ -43,30 +42,12 @@ $lang = $_SESSION['site_language'];
     <link rel='stylesheet' href='css/owl.carousel.min.css' type='text/css'>
     <link rel='stylesheet' href='css/slicknav.min.css' type='text/css'>
     <link rel='stylesheet' href='css/header.css' type='text/css'>
-    
-    <!-- Force override any framework underlines -->
-    <style>
-        /* Ultimate underline removal */
-        * a, * a:hover, * a:focus, * a:active, * a:visited,
-        a, a:hover, a:focus, a:active, a:visited {
-            text-decoration: none !important;
-            text-decoration-line: none !important;
-            text-decoration-color: transparent !important;
-            text-decoration-style: none !important;
-            border-bottom: none !important;
-        }
-        
-        /* Specific navigation targeting */
-        .nav-menu a, .nav-menu a:hover, .nav-menu a:focus,
-        .nav-menu ul li a, .nav-menu ul li a:hover,
-        nav a, nav a:hover, nav ul li a, nav ul li a:hover {
-            text-decoration: none !important;
-            border-bottom: none !important;
-        }
-    </style>
 </head>
 
 <body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay"></div>
+
     <!-- Header Section Begin -->
     <header class="header-section">
         <!-- Main Header -->
@@ -133,8 +114,11 @@ $lang = $_SESSION['site_language'];
 
         <!-- Navigation Menu -->
         <div class="nav-menu-container">
+            <!-- Mobile Menu Close Button -->
+            <!-- <div class="mobile-menu-close">×</div> -->
+            
             <div class="container">
-                <nav class="nav-menu mobile-menu">
+                <nav class="nav-menu">
                     <ul>
                         <?php 
                         // Language-based navigation texts
@@ -219,7 +203,7 @@ $lang = $_SESSION['site_language'];
                 }
             }
             
-            // Open menu when burger is clicked
+            // Open/close menu when burger is clicked
             if (mobileMenuBtn) {
                 mobileMenuBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -231,12 +215,6 @@ $lang = $_SESSION['site_language'];
                 });
             }
             
-            // Close menu when close button is clicked
-            if (mobileCloseBtn) {
-                mobileCloseBtn.addEventListener('click', function() {
-                    closeMobileMenu();
-                });
-            }
             
             // Close menu when overlay is clicked
             if (mobileOverlay) {
@@ -245,11 +223,13 @@ $lang = $_SESSION['site_language'];
                 });
             }
             
-            // Close menu when a navigation link is clicked
+            // Close menu when navigation link is clicked (mobile only)
             const navLinks = document.querySelectorAll('.nav-menu a');
             navLinks.forEach(link => {
                 link.addEventListener('click', function() {
-                    closeMobileMenu();
+                    if (window.innerWidth <= 767) {
+                        closeMobileMenu();
+                    }
                 });
             });
             
@@ -267,25 +247,20 @@ $lang = $_SESSION['site_language'];
                 }
             });
 
-            // Handle dropdowns on mobile (if you add them later)
+            // Handle dropdowns if you add them later
             const dropdownItems = document.querySelectorAll('.has-dropdown');
-            
             dropdownItems.forEach(item => {
                 const link = item.querySelector('a');
-                
                 if (link) {
                     link.addEventListener('click', function(e) {
                         if (window.innerWidth <= 767) {
                             if (!item.classList.contains('dropdown-open')) {
                                 e.preventDefault();
-                                // Close all other dropdowns
                                 dropdownItems.forEach(otherItem => {
                                     if (otherItem !== item) {
                                         otherItem.classList.remove('dropdown-open');
                                     }
                                 });
-                                
-                                // Toggle this dropdown
                                 item.classList.add('dropdown-open');
                             }
                         }
@@ -304,3 +279,5 @@ $lang = $_SESSION['site_language'];
         echo "<script>window.open('index.php','_self')</script>";
     }
     ?>
+</body>
+</html>
