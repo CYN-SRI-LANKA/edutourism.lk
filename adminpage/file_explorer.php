@@ -1,185 +1,319 @@
-<?php
-session_start();
-if (!isset($_SESSION['user'])) {
-    header('Location: adminmain.php');
-    exit();
-}
-// ---- CONFIG ----
-$baseDir = "uploads/visa";
-
-// ---- Handle Any Download Request ----
-if (isset($_GET['download_folder'])) {
-    $folder = trim($_GET['download_folder']);
-    $folder = basename($folder); // more secure
-    $dir = "$baseDir/$folder";
-    if (!$folder || !is_dir($dir)) die("Folder not found.");
-
-    $zipName = $folder . ".zip";
-    $zipPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $zipName;
-
-    $zip = new ZipArchive();
-    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== TRUE)
-        die("Failed to create zip");
-
-    $files = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS),
-        RecursiveIteratorIterator::LEAVES_ONLY
-    );
-    foreach ($files as $file) {
-        $filePath = $file->getRealPath();
-        $localPath = substr($filePath, strlen($dir) + 1);
-        $zip->addFile($filePath, $localPath);
-    }
-    $zip->close();
-
-    header('Content-Type: application/zip');
-    header('Content-Disposition: attachment; filename="' . $zipName . '"');
-    header('Content-Length: ' . filesize($zipPath));
-    readfile($zipPath);
-    unlink($zipPath);
-    exit;
-}
-
-if (isset($_GET['download_all'])) {
-    $zipName = "All_Applicants.zip";
-    $zipPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $zipName;
-
-    $zip = new ZipArchive();
-    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== TRUE)
-        die("Failed to create zip");
-
-    $folders = array_filter(glob($baseDir . '/*'), 'is_dir');
-    foreach ($folders as $folder) {
-        $folderName = basename($folder);
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($folder, FilesystemIterator::SKIP_DOTS),
-            RecursiveIteratorIterator::LEAVES_ONLY
-        );
-        foreach ($files as $file) {
-            $filePath = $file->getRealPath();
-            $localPath = $folderName . '/' . substr($filePath, strlen($folder) + 1);
-            $zip->addFile($filePath, $localPath);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon - EduTourism v3.1</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
         }
-    }
-    $zip->close();
 
-    header('Content-Type: application/zip');
-    header('Content-Disposition: attachment; filename="' . $zipName . '"');
-    header('Content-Length: ' . filesize($zipPath));
-    readfile($zipPath);
-    unlink($zipPath);
-    exit;
-}
-
-// ---- List all folders ----
-$folders = [];
-if (is_dir($baseDir)) {
-    $items = scandir($baseDir);
-    foreach ($items as $item) {
-        if ($item === '.' || $item === '..') continue;
-        if (is_dir("$baseDir/$item")) {
-            $folders[] = $item;
+        .bgimg {
+            color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-    }
-}
 
-// ---- Show files in folder if requested ----
-$show_files = false;
-$active_folder = '';
-$files_list = [];
-if (isset($_GET['folder'])) {
-    $active_folder = trim($_GET['folder']);
-    $active_folder = basename($active_folder);
-    $dir = "$baseDir/$active_folder";
-    if (is_dir($dir)) {
-        $show_files = true;
-        $files_in_dir = array_diff(scandir($dir), ['.', '..']);
-        foreach ($files_in_dir as $file) {
-            if (is_file("$dir/$file")) {
-                $files_list[] = $file;
+        .topleft {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .middle {
+            text-align: center;
+            color: white;
+            z-index: 100;
+        }
+
+        .middle h1 {
+            font-size: 4rem;
+            margin: 0;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: pulse 2s infinite;
+        }
+
+        .middle hr {
+            width: 200px;
+            border: 2px solid white;
+            margin: 20px auto;
+        }
+
+        .middle p {
+            font-size: 1.5rem;
+            margin: 10px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .bottomleft {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-size: 1rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Redirect message styling */
+        .redirect-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            min-width: 320px;
+            border-left: 5px solid #5cb85c;
+            backdrop-filter: blur(10px);
+        }
+
+        .countdown-number {
+            color: #d9534f;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background-color: #1e7e34;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        /* Progress bar */
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: #eee;
+            border-radius: 2px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            border-radius: 2px;
+            transition: width 1s linear;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .middle h1 {
+                font-size: 2.5rem;
+            }
+            
+            .middle p {
+                font-size: 1.2rem;
+            }
+            
+            .topleft img {
+                width: 150px !important;
+            }
+            
+            .redirect-message {
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+                top: 10px;
             }
         }
-    }
-}
-?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Applicant Folders Explorer & Download</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <style>
-        body { font-family: Arial, sans-serif; background: #f7fafb; padding:27px;}
-        .container { background: #fff; border-radius:10px; padding:32px 22px; box-shadow:0 2px 14px 2px #0001; max-width:580px; margin:38px auto;}
-        h2 { color: #1a3861; margin-bottom:18px;}
-        ul { padding-left:24px;}
-        li { margin-bottom:13px; }
-        a, .btn { color: #2b8e62; text-decoration: underline; cursor:pointer;}
-        .btn { color:#fff; background:#2b8e62; border:none; padding:7px 13px; border-radius:8px; text-decoration:none; margin-left:9px; font-size:.97em;}
-        .btn-all { background:#5584bc; }
-        .file-preview { display:block;margin-top:4px;max-width:171px;max-height:110px;border:1px solid #dde;}
-        .nofiles { color:#b8513e; }
-        .back { display:inline-block;margin-bottom:20px;color:#566; text-decoration:none;}
-        .folderlist { margin-bottom:35px; }
+
+        /* Loading animation */
+        .loading-dots {
+            display: inline-block;
+        }
+
+        .loading-dots:after {
+            content: '';
+            animation: loading 2s infinite;
+        }
+
+        @keyframes loading {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: ''; }
+        }
     </style>
 </head>
-<body>
-<div class="container">
-    <div>
-            <a href="adminmain.php" class="btn btn-secondary">← Back</a>
+<body style="background-color:black;">
+    <div class="bgimg">
+        <div class="topleft">
+            <img src="../homepage/img/logo.png" style="width: 200px; height: auto;" alt="EduTourism Logo">
         </div>
-    <h2>Applicant Folders Explorer</h2>
-
-    <!-- Download All -->
-    <div style="margin-bottom:26px;">
-        <a href="?download_all=1" class="btn btn-all">Download All Folders as ZIP</a>
+        <div class="middle">
+            <h1>COMING SOON</h1>
+            <hr>
+            <p>In EduTourism v3.1</p>
+        </div>
+        <div class="bottomleft">
+            <p>Under operation<span class="loading-dots"></span></p>
+        </div>
     </div>
 
-    <?php if ($show_files): ?>
-        <!-- Files in Selected Folder -->
-        <a class='back' href="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">&laquo; Back to folders</a>
-        <h3>
-            Files for <span style='color:#296;'><?php echo htmlspecialchars($active_folder); ?></span>
-            <a href="?download_folder=<?php echo urlencode($active_folder); ?>" class="btn">Download Folder ZIP</a>
-        </h3>
-        <?php if ($files_list): ?>
-            <ul>
-                <?php foreach ($files_list as $file): 
-                    $safe_fn = htmlspecialchars($file);
-                    $file_url = "$baseDir/$active_folder/$safe_fn";
-                    $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                    $is_img = in_array($ext, ['jpg','jpeg','png','gif','webp','bmp']);
-                ?>
-                <li>
-                    <a href="<?php echo $file_url; ?>" target="_blank"><?php echo $safe_fn; ?></a>
-                    <?php if ($is_img): ?>
-                        <br><img src="<?php echo $file_url; ?>" alt="<?php echo $safe_fn; ?>" class="file-preview">
-                    <?php endif; ?>
-                </li>
-                <?php endforeach; ?>
-            </ul>
-        <?php else: ?>
-            <p class="nofiles">No files found in this folder.</p>
-        <?php endif; ?>
-    <?php else: ?>
-        <!-- List All Folders -->
-        <div class="folderlist">
-        <?php if ($folders): ?>
-            <ul>
-            <?php foreach ($folders as $folder): ?>
-                <li>
-                    <a href="?folder=<?php echo urlencode($folder); ?>">
-                        <?php echo htmlspecialchars($folder); ?>
-                    </a>
-                    <a href="?download_folder=<?php echo urlencode($folder); ?>" class="btn">Download ZIP</a>
-                </li>
-            <?php endforeach; ?>
-            </ul>
-        <?php else: ?>
-            <p class="nofiles">No applicant folders found.</p>
-        <?php endif; ?>
-        </div>
-    <?php endif; ?>
-</div>
+    <script>
+        // Auto-redirect with countdown display
+        let countdown = 8;
+        let redirectTimer;
+        let progressTimer;
+
+        function showRedirectMessage() {
+            // Create the redirect message
+            let messageDiv = document.getElementById('redirect-message');
+            if (!messageDiv) {
+                messageDiv = document.createElement('div');
+                messageDiv.id = 'redirect-message';
+                messageDiv.className = 'redirect-message';
+                
+                messageDiv.innerHTML = `
+                    <button class="close-btn" onclick="cancelRedirect()" title="Cancel redirect">&times;</button>
+                    <div style="margin-right: 20px;">
+                        <strong style="color: #28a745;">Edutourism Team</strong><br>
+                        <p style="margin: 10px 0; font-size: 14px;">Redirecting to Admin Panel in <span class="countdown-number">${countdown}</span> seconds...</p>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="progress-bar" style="width: 100%;"></div>
+                        </div>
+                        <a href="adminmain.php" class="btn btn-success" style="margin-right: 10px;">
+                             Go Now
+                        </a>
+                        <button onclick="cancelRedirect()" class="btn" style="background-color: #6c757d;">
+                             Cancel
+                        </button>
+                    </div>
+                `;
+                
+                document.body.appendChild(messageDiv);
+            } else {
+                // Update countdown
+                messageDiv.querySelector('.countdown-number').textContent = countdown;
+                // Update progress bar
+                const progressPercentage = ((8 - countdown) / 8) * 100;
+                messageDiv.querySelector('#progress-bar').style.width = (100 - progressPercentage) + '%';
+            }
+        }
+
+        function startRedirectCountdown() {
+            showRedirectMessage();
+            
+            redirectTimer = setInterval(function() {
+                countdown--;
+                showRedirectMessage();
+                
+                if (countdown <= 0) {
+                    clearInterval(redirectTimer);
+                    // Add loading effect before redirect
+                    document.querySelector('.redirect-message').innerHTML = `
+                        <div style="text-align: center; padding: 10px;">
+                            <strong style="color: #007bff;">🔄 Redirecting...</strong>
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: 100%; animation: pulse 1s infinite;"></div>
+                            </div>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        window.location.href = 'adminmain.php';
+                    }, 1000);
+                }
+            }, 1000);
+        }
+
+        function cancelRedirect() {
+            clearInterval(redirectTimer);
+            const messageDiv = document.getElementById('redirect-message');
+            if (messageDiv) {
+                messageDiv.style.animation = 'fadeOut 0.3s ease-out';
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 300);
+            }
+        }
+
+        // Add fade out animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; transform: translateX(0); }
+                to { opacity: 0; transform: translateX(100%); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Start countdown when page loads
+        window.onload = function() {
+            // Add a small delay before showing the redirect message
+            setTimeout(() => {
+                startRedirectCountdown();
+            }, 2000);
+        };
+
+        // Add keyboard shortcut to go directly
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                window.location.href = 'adminmain.php';
+            } else if (event.key === 'Escape') {
+                cancelRedirect();
+            }
+        });
+
+
+    </script>
 </body>
 </html>

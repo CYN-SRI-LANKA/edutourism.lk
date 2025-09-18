@@ -54,44 +54,8 @@ if (isset($_POST['search_nic']) && !empty($_POST['search_nic'])) {
     }
 }
 
-// Function to check if field should be conditionally required
-function isFieldConditionallyRequired($field_name, $employment_status, $dependent_status = null) {
-    // Always required fields
-    $always_required = [
-        'nic_number', 'nameforthecertificates', 'nameforthetourid', 'address_line1',
-        'city', 'postalCode', 'province', 'surname', 'othername', 'birthYear', 
-        'birthMonth', 'birthDay', 'gender', 'passportNumber', 'issueYear', 
-        'issueMonth', 'issueDay', 'expiryYear', 'expiryMonth', 'expiryDay',
-        'passportCopy', 'photoId', 'visaRequestLetter', 'bankStatements', 'employmentStatus'
-    ];
-    
-    if (in_array($field_name, $always_required)) {
-        return true;
-    }
-    
-    // Conditional requirements based on employment status
-    switch($employment_status) {
-        case 'employee':
-            return in_array($field_name, ['employmentLetter', 'paySlips']);
-            
-        case 'business':
-            return in_array($field_name, ['businessRegistration']);
-            
-        case 'freelancer':
-            return in_array($field_name, ['serviceLetters']);
-            
-        case 'student':
-            $student_required = ['dependentStatus'];
-            if ($dependent_status == 'student') {
-                $student_required[] = 'studentLetter';
-            } elseif ($dependent_status == 'dependent') {
-                $student_required[] = 'dependentConfirmationDependent';
-            }
-            return in_array($field_name, $student_required);
-    }
-    
-    return false;
-}
+// Function to check if field should be conditionally 
+
 
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['search_nic'])) {
@@ -102,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['search_nic'])) {
         $nic_number = mysqli_real_escape_string($con, $_POST['nic_number']);
         
         if (empty($nic_number)) {
-            throw new Exception('NIC Number is required');
+            throw new Exception('NIC Number is ');
         }
         
         // Create uploads directory if it doesn't exist
@@ -733,8 +697,8 @@ if ($existing_data) {
             background-color: rgba(231, 76, 60, 0.05);
         }
 
-        /* ADDED: Required field indicator */
-        .form-group label[required]::after {
+        /* ADDED:  field indicator */
+        .form-group label[]::after {
             content: " *";
             color: var(--error-color);
             font-weight: bold;
@@ -1027,8 +991,8 @@ if ($existing_data) {
             
             <!-- NIC Number Field -->
             <div class="form-group">
-                <label for="nic_number" required>🆔 NIC Number</label>
-                <input type="text" id="nic_number" name="nic_number" required 
+                <label for="nic_number" >🆔 NIC Number</label>
+                <input type="text" id="nic_number" name="nic_number"  
                        value="<?php echo $existing_data ? htmlspecialchars($existing_data['nic_number']) : htmlspecialchars($nic_search); ?>"
                        <?php echo shouldLockField($existing_data, 'nic_number') ? 'readonly class="locked valid"' : ''; ?>
                        placeholder="Enter your NIC number">
@@ -1037,8 +1001,8 @@ if ($existing_data) {
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="nameforthecertificates" required>📜 Name for the Certificates</label>
-                        <input type="text" id="nameforthecertificates" name="nameforthecertificates" required
+                        <label for="nameforthecertificates" >📜 Name for the Certificates</label>
+                        <input type="text" id="nameforthecertificates" name="nameforthecertificates" 
                                value="<?php echo $existing_data ? htmlspecialchars($existing_data['name_for_certificates']) : ''; ?>"
                                <?php echo shouldLockField($existing_data, 'name_for_certificates') ? 'readonly class="locked valid"' : ''; ?>
                                placeholder="Name for the certificates">
@@ -1046,8 +1010,8 @@ if ($existing_data) {
                 </div>
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="nameforthetourid" required>🎫 Name for the Tour ID<br><small>(One Short Name, eg: Nuwan)</small></label>
-                        <input type="text" id="nameforthetourid" name="nameforthetourid" required
+                        <label for="nameforthetourid" >🎫 Name for the Tour ID<br><small>(One Short Name, eg: Nuwan)</small></label>
+                        <input type="text" id="nameforthetourid" name="nameforthetourid" 
                                value="<?php echo $existing_data ? htmlspecialchars($existing_data['name_for_tour_id']) : ''; ?>"
                                <?php echo shouldLockField($existing_data, 'name_for_tour_id') ? 'readonly class="locked valid"' : ''; ?>
                                placeholder="Short name for tour ID">
@@ -1057,9 +1021,9 @@ if ($existing_data) {
 
             <!-- Multi-line Address -->
             <div class="form-group">
-                <label required>🏠 Permanent Address</label>
+                <label >🏠 Permanent Address</label>
                 <div class="address-lines">
-                    <input type="text" id="address_line1" name="address_line1" required
+                    <input type="text" id="address_line1" name="address_line1" 
                            value="<?php echo htmlspecialchars($address_line1); ?>"
                            <?php echo shouldLockField($existing_data, 'permanent_address') ? 'readonly class="locked valid"' : ''; ?>
                            placeholder="Address Line 1">
@@ -1077,8 +1041,8 @@ if ($existing_data) {
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="city" required>🏙️ City</label>
-                        <input type="text" id="city" name="city" required
+                        <label for="city" >🏙️ City</label>
+                        <input type="text" id="city" name="city" 
                                value="<?php echo $existing_data ? htmlspecialchars($existing_data['city']) : ''; ?>"
                                <?php echo shouldLockField($existing_data, 'city') ? 'readonly class="locked valid"' : ''; ?>
                                placeholder="Enter city">
@@ -1086,8 +1050,8 @@ if ($existing_data) {
                 </div>
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="postalCode" required>📮 Postal Code</label>
-                        <input type="text" id="postalCode" name="postalCode" required
+                        <label for="postalCode" >📮 Postal Code</label>
+                        <input type="text" id="postalCode" name="postalCode" 
                                value="<?php echo $existing_data ? htmlspecialchars($existing_data['postal_code']) : ''; ?>"
                                <?php echo shouldLockField($existing_data, 'postal_code') ? 'readonly class="locked valid"' : ''; ?>
                                placeholder="Enter postal code">
@@ -1096,8 +1060,8 @@ if ($existing_data) {
             </div>
             
             <div class="form-group">
-                <label for="province" required>🗺️ Province</label>
-                <input type="text" id="province" name="province" required
+                <label for="province" >🗺️ Province</label>
+                <input type="text" id="province" name="province" 
                        value="<?php echo $existing_data ? htmlspecialchars($existing_data['province']) : ''; ?>"
                        <?php echo shouldLockField($existing_data, 'province') ? 'readonly class="locked valid"' : ''; ?>
                        placeholder="Enter province">
@@ -1113,8 +1077,8 @@ if ($existing_data) {
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="surname" required>👤 Surname (As given in the Passport)</label>
-                        <input type="text" id="surname" name="surname" required
+                        <label for="surname" >👤 Surname (As given in the Passport)</label>
+                        <input type="text" id="surname" name="surname" 
                                value="<?php echo $existing_data ? htmlspecialchars($existing_data['surname']) : ''; ?>"
                                <?php echo shouldLockField($existing_data, 'surname') ? 'readonly class="locked valid"' : ''; ?>
                                placeholder="Surname from passport">
@@ -1122,8 +1086,8 @@ if ($existing_data) {
                 </div>
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="othername" required>👥 Other Names (As given in the Passport)</label>
-                        <input type="text" id="othername" name="othername" required
+                        <label for="othername" >👥 Other Names (As given in the Passport)</label>
+                        <input type="text" id="othername" name="othername" 
                                value="<?php echo $existing_data ? htmlspecialchars($existing_data['other_names']) : ''; ?>"
                                <?php echo shouldLockField($existing_data, 'other_names') ? 'readonly class="locked valid"' : ''; ?>
                                placeholder="Other names from passport">
@@ -1133,9 +1097,9 @@ if ($existing_data) {
 
             <!-- Separated Date of Birth -->
             <div class="form-group">
-                <label required>📅 Date of Birth (As given in the Passport)</label>
+                <label >📅 Date of Birth (As given in the Passport)</label>
                 <div class="date-container">
-                    <select id="birthYear" name="birthYear" required <?php echo shouldLockField($existing_data, 'date_of_birth') ? 'disabled class="locked valid"' : ''; ?>>
+                    <select id="birthYear" name="birthYear"  <?php echo shouldLockField($existing_data, 'date_of_birth') ? 'disabled class="locked valid"' : ''; ?>>
                         <option value="">Year</option>
                         <?php 
                         for($year = 1950; $year <= 2010; $year++) {
@@ -1145,7 +1109,7 @@ if ($existing_data) {
                         ?>
                     </select>
                     
-                    <select id="birthMonth" name="birthMonth" required <?php echo shouldLockField($existing_data, 'date_of_birth') ? 'disabled class="locked valid"' : ''; ?>>
+                    <select id="birthMonth" name="birthMonth"  <?php echo shouldLockField($existing_data, 'date_of_birth') ? 'disabled class="locked valid"' : ''; ?>>
                         <option value="">Month</option>
                         <?php 
                         $months = [
@@ -1160,7 +1124,7 @@ if ($existing_data) {
                         ?>
                     </select>
                     
-                    <select id="birthDay" name="birthDay" required <?php echo shouldLockField($existing_data, 'date_of_birth') ? 'disabled class="locked valid"' : ''; ?>>
+                    <select id="birthDay" name="birthDay"  <?php echo shouldLockField($existing_data, 'date_of_birth') ? 'disabled class="locked valid"' : ''; ?>>
                         <option value="">Day</option>
                         <?php 
                         for($day = 1; $day <= 31; $day++) {
@@ -1174,8 +1138,8 @@ if ($existing_data) {
 
             <!-- Gender without default selection -->
             <div class="form-group">
-                <label for="gender" required>⚧ Gender (As given in the Passport)</label>
-                <select id="gender" name="gender" required <?php echo shouldLockField($existing_data, 'gender') ? 'disabled class="locked valid"' : ''; ?>>
+                <label for="gender" >⚧ Gender (As given in the Passport)</label>
+                <select id="gender" name="gender"  <?php echo shouldLockField($existing_data, 'gender') ? 'disabled class="locked valid"' : ''; ?>>
                     <option value="">Select Gender</option>
                     <option value="male" <?php echo ($existing_data && $existing_data['gender'] == 'male') ? 'selected' : ''; ?>>👨 Male</option>
                     <option value="female" <?php echo ($existing_data && $existing_data['gender'] == 'female') ? 'selected' : ''; ?>>👩 Female</option>
@@ -1183,8 +1147,8 @@ if ($existing_data) {
             </div>
 
             <div class="form-group">
-                <label for="passportNumber" required>📘 Passport Number (As given in the Passport)</label>
-                <input type="text" id="passportNumber" name="passportNumber" required
+                <label for="passportNumber" >📘 Passport Number (As given in the Passport)</label>
+                <input type="text" id="passportNumber" name="passportNumber" 
                        value="<?php echo $existing_data ? htmlspecialchars($existing_data['passport_number']) : ''; ?>"
                        <?php echo shouldLockField($existing_data, 'passport_number') ? 'readonly class="locked valid"' : ''; ?>
                        placeholder="Passport number">
@@ -1193,9 +1157,9 @@ if ($existing_data) {
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
-                        <label required>📅 Issue Date</label>
+                        <label >📅 Issue Date</label>
                         <div class="date-container">
-                            <select id="issueYear" name="issueYear" required <?php echo shouldLockField($existing_data, 'issue_date') ? 'disabled class="locked valid"' : ''; ?>>
+                            <select id="issueYear" name="issueYear"  <?php echo shouldLockField($existing_data, 'issue_date') ? 'disabled class="locked valid"' : ''; ?>>
                                 <option value="">Year</option>
                                 <?php 
                                 for($year = 2015; $year <= 2025; $year++) {
@@ -1205,7 +1169,7 @@ if ($existing_data) {
                                 ?>
                             </select>
                             
-                            <select id="issueMonth" name="issueMonth" required <?php echo shouldLockField($existing_data, 'issue_date') ? 'disabled class="locked valid"' : ''; ?>>
+                            <select id="issueMonth" name="issueMonth"  <?php echo shouldLockField($existing_data, 'issue_date') ? 'disabled class="locked valid"' : ''; ?>>
                                 <option value="">Month</option>
                                 <?php 
                                 foreach($months as $num => $name) {
@@ -1215,7 +1179,7 @@ if ($existing_data) {
                                 ?>
                             </select>
                             
-                            <select id="issueDay" name="issueDay" required <?php echo shouldLockField($existing_data, 'issue_date') ? 'disabled class="locked valid"' : ''; ?>>
+                            <select id="issueDay" name="issueDay"  <?php echo shouldLockField($existing_data, 'issue_date') ? 'disabled class="locked valid"' : ''; ?>>
                                 <option value="">Day</option>
                                 <?php 
                                 for($day = 1; $day <= 31; $day++) {
@@ -1229,9 +1193,9 @@ if ($existing_data) {
                 </div>
                 <div class="form-col">
                     <div class="form-group">
-                        <label required>⏰ Expiry Date</label>
+                        <label >⏰ Expiry Date</label>
                         <div class="date-container">
-                            <select id="expiryYear" name="expiryYear" required <?php echo shouldLockField($existing_data, 'expiry_date') ? 'disabled class="locked valid"' : ''; ?>>
+                            <select id="expiryYear" name="expiryYear"  <?php echo shouldLockField($existing_data, 'expiry_date') ? 'disabled class="locked valid"' : ''; ?>>
                                 <option value="">Year</option>
                                 <?php 
                                 for($year = 2026; $year <= 2035; $year++) {
@@ -1241,7 +1205,7 @@ if ($existing_data) {
                                 ?>
                             </select>
                             
-                            <select id="expiryMonth" name="expiryMonth" required <?php echo shouldLockField($existing_data, 'expiry_date') ? 'disabled class="locked valid"' : ''; ?>>
+                            <select id="expiryMonth" name="expiryMonth"  <?php echo shouldLockField($existing_data, 'expiry_date') ? 'disabled class="locked valid"' : ''; ?>>
                                 <option value="">Month</option>
                                 <?php 
                                 foreach($months as $num => $name) {
@@ -1251,7 +1215,7 @@ if ($existing_data) {
                                 ?>
                             </select>
                             
-                            <select id="expiryDay" name="expiryDay" required <?php echo shouldLockField($existing_data, 'expiry_date') ? 'disabled class="locked valid"' : ''; ?>>
+                            <select id="expiryDay" name="expiryDay"  <?php echo shouldLockField($existing_data, 'expiry_date') ? 'disabled class="locked valid"' : ''; ?>>
                                 <option value="">Day</option>
                                 <?php 
                                 for($day = 1; $day <= 31; $day++) {
@@ -1274,7 +1238,7 @@ if ($existing_data) {
             
             <!-- Passport Copy (SINGLE FILE) -->
             <div class="form-group">
-                <label for="passportCopy" required>📄 Passport Copy (Both Sides)</label>
+                <label for="passportCopy" >📄 Passport Copy (Both Sides)</label>
                 <div class="file-upload <?php echo ($existing_data && $existing_data['passport_copy']) ? 'uploaded' : ''; ?>">
                     <div class="upload-progress">
                         <div class="spinner"></div>
@@ -1284,7 +1248,7 @@ if ($existing_data) {
                     <h4>Upload Passport Copy</h4>
                     <p>Drag and drop your file here or click to browse</p>
                     <p style="font-size: 14px; color: var(--dark-gray);">Accepted formats: PDF, JPG, PNG (Max size: 5MB)</p>
-                    <input type="file" id="passportCopy" name="passportCopy" accept=".pdf,.jpg,.jpeg,.png" required>
+                    <input type="file" id="passportCopy" name="passportCopy" accept=".pdf,.jpg,.jpeg,.png" >
                     <div class="file-name-display" id="passportFileDisplay">
                         <?php if ($existing_data && $existing_data['passport_copy']): ?>
                             ✅ Current file: <?php echo htmlspecialchars($existing_data['passport_copy']); ?>
@@ -1295,7 +1259,7 @@ if ($existing_data) {
             
             <!-- Passport Size Photo (SINGLE FILE) -->
             <div class="form-group">
-                <label for="photoId" required>🖼️ Passport Size Photo</label>
+                <label for="photoId" >🖼️ Passport Size Photo</label>
                 <div class="file-upload <?php echo ($existing_data && $existing_data['photo_id']) ? 'uploaded' : ''; ?>">
                     <div class="upload-progress">
                         <div class="spinner"></div>
@@ -1305,7 +1269,7 @@ if ($existing_data) {
                     <h4>Upload Passport Size Photo</h4>
                     <p>Drag and drop your file here or click to browse</p>
                     <p style="font-size: 14px; color: var(--dark-gray);">Accepted formats: JPG, PNG (Max size: 2MB)</p>
-                    <input type="file" id="photoId" name="photoId" accept=".jpg,.jpeg,.png" required>
+                    <input type="file" id="photoId" name="photoId" accept=".jpg,.jpeg,.png" >
                     <div class="file-name-display" id="photoFileDisplay">
                         <?php if ($existing_data && $existing_data['photo_id']): ?>
                             ✅ Current file: <?php echo htmlspecialchars($existing_data['photo_id']); ?>
@@ -1316,7 +1280,7 @@ if ($existing_data) {
             
             <!-- Visa Request Letter (MULTIPLE FILES) -->
             <div class="form-group">
-                <label for="visaRequestLetter" required>📝 Visa Request Letter (Signed)</label>
+                <label for="visaRequestLetter" >📝 Visa Request Letter (Signed)</label>
                 <div class="file-upload <?php echo ($existing_data && $existing_data['visa_request_letter']) ? 'uploaded' : ''; ?>">
                     <div class="upload-progress">
                         <div class="spinner"></div>
@@ -1326,7 +1290,7 @@ if ($existing_data) {
                     <h4>Upload Visa Request Letter</h4>
                     <p>Drag and drop your files here or click to browse</p>
                     <p style="font-size: 14px; color: var(--dark-gray);">Accepted formats: JPG, PDF (Max size: 2MB each)</p>
-                    <input type="file" id="visaRequestLetter" name="visaRequestLetter[]" multiple accept=".jpg,.jpeg,.pdf" required>
+                    <input type="file" id="visaRequestLetter" name="visaRequestLetter[]" multiple accept=".jpg,.jpeg,.pdf" >
                     <div class="file-name-display" id="visaRequestLetterDisplay">
                         <?php if ($existing_data && $existing_data['visa_request_letter']): ?>
                             ✅ Current files: <?php echo htmlspecialchars($existing_data['visa_request_letter']); ?>
@@ -1337,7 +1301,7 @@ if ($existing_data) {
             
             <!-- Bank Statements (MULTIPLE FILES) -->
             <div class="form-group">
-                <label for="bankStatements" required>🏦 Bank Statements</label>
+                <label for="bankStatements" >🏦 Bank Statements</label>
                 <div class="file-upload <?php echo ($existing_data && $existing_data['bank_statements']) ? 'uploaded' : ''; ?>">
                     <div class="upload-progress">
                         <div class="spinner"></div>
@@ -1347,7 +1311,7 @@ if ($existing_data) {
                     <h4>Upload Bank Statements</h4>
                     <p>Drag and drop your files here or click to browse</p>
                     <p style="font-size: 14px; color: var(--dark-gray);">Accepted formats: JPG, PNG, PDF (Max size: 2MB each)</p>
-                    <input type="file" id="bankStatements" name="bankStatements[]" multiple accept=".jpg,.jpeg,.pdf,.png" required>
+                    <input type="file" id="bankStatements" name="bankStatements[]" multiple accept=".jpg,.jpeg,.pdf,.png" >
                     <div class="file-name-display" id="bankStatementsDisplay">
                         <?php if ($existing_data && $existing_data['bank_statements']): ?>
                             ✅ Current files: <?php echo htmlspecialchars($existing_data['bank_statements']); ?>
@@ -1358,29 +1322,29 @@ if ($existing_data) {
             
             <!-- Employment Status Selection -->
             <div class="form-group">
-                <label style="border-bottom: 2px solid var(--medium-gray); padding-bottom: 10px; margin-bottom: 20px;" required>
+                <label style="border-bottom: 2px solid var(--medium-gray); padding-bottom: 10px; margin-bottom: 20px;" >
                     💼 If you are
                 </label>
                 
                 <div class="status-selector">
                     <div class="radio-group">
                         <label>
-                            <input type="radio" name="employmentStatus" value="employee" onclick="showEmploymentSection('employee')" required
+                            <input type="radio" name="employmentStatus" value="employee" onclick="showEmploymentSection('employee')" 
                                    <?php echo ($existing_data && $existing_data['employment_status'] == 'employee') ? 'checked' : ''; ?>>
                             <span>👨‍💼 Employee</span>
                         </label>
                         <label>
-                            <input type="radio" name="employmentStatus" value="business" onclick="showEmploymentSection('business')" required
+                            <input type="radio" name="employmentStatus" value="business" onclick="showEmploymentSection('business')" 
                                    <?php echo ($existing_data && $existing_data['employment_status'] == 'business') ? 'checked' : ''; ?>>
                             <span>🏢 Business Owner</span>
                         </label>
                         <label>
-                            <input type="radio" name="employmentStatus" value="freelancer" onclick="showEmploymentSection('freelancer')" required
+                            <input type="radio" name="employmentStatus" value="freelancer" onclick="showEmploymentSection('freelancer')" 
                                    <?php echo ($existing_data && $existing_data['employment_status'] == 'freelancer') ? 'checked' : ''; ?>>
                             <span>💻 Freelancer</span>
                         </label>
                         <label>
-                            <input type="radio" name="employmentStatus" value="student" onclick="showEmploymentSection('student_dependent')" required
+                            <input type="radio" name="employmentStatus" value="student" onclick="showEmploymentSection('student_dependent')" 
                                    <?php echo ($existing_data && $existing_data['employment_status'] == 'student') ? 'checked' : ''; ?>>
                             <span>🎓 Student/Dependent</span>
                         </label>
@@ -1569,7 +1533,7 @@ if ($existing_data) {
                 <!-- Student/Dependent Section -->
                 <div id="studentDependentSection" class="employment-section" style="display: <?php echo ($existing_data && $existing_data['employment_status'] == 'student') ? 'block' : 'none'; ?>;">
                     <div class="form-group">
-                        <label style="border-bottom: 2px solid var(--medium-gray); padding-bottom: 10px; margin-bottom: 20px;" required>
+                        <label style="border-bottom: 2px solid var(--medium-gray); padding-bottom: 10px; margin-bottom: 20px;" >
                             👨‍👩‍👧‍👦 If you are
                         </label>
                         
@@ -1731,9 +1695,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Enhanced field validation with conditional requirements
     function validateField(field) {
         const value = field.value.trim();
-        const isRequired = field.hasAttribute('required') || isFieldConditionallyRequired(field);
         
-        if (isRequired && value === '') {
+        
+        if (is && value === '') {
             field.classList.add('error');
             field.classList.remove('valid');
             return false;
@@ -1743,12 +1707,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return true;
         } else {
             field.classList.remove('valid', 'error');
-            return !isRequired;
+            return !is;
         }
     }
 
-    // Check if field is conditionally required based on employment status
-    function isFieldConditionallyRequired(field) {
+    // Check if field is conditionally  based on employment status
+    function isFieldConditionally(field) {
         const employmentStatus = form.querySelector('input[name="employmentStatus"]:checked');
         const dependentStatus = form.querySelector('input[name="dependentStatus"]:checked');
         const fieldName = field.name || field.id;
@@ -1758,7 +1722,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const status = employmentStatus.value;
         const depStatus = dependentStatus ? dependentStatus.value : null;
         
-        // Check if field is in visible section and required for that employment type
+        // Check if field is in visible section and  for that employment type
         switch(status) {
             case 'employee':
                 if (document.getElementById('employeeSection').style.display === 'block') {
@@ -1810,11 +1774,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Validate file inputs with conditional requirements
     function validateFileInput(input) {
-        const isRequired = input.hasAttribute('required') || isFieldConditionallyRequired(input);
         const hasFiles = input.files && input.files.length > 0;
         const hasExistingFile = input.closest('.file-upload').classList.contains('uploaded');
         
-        if (isRequired && !hasFiles && !hasExistingFile) {
+        if (is && !hasFiles && !hasExistingFile) {
             input.classList.add('error');
             input.closest('.file-upload').classList.add('error');
             input.classList.remove('valid');
@@ -1827,7 +1790,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             input.classList.remove('valid', 'error');
             input.closest('.file-upload').classList.remove('error');
-            return !isRequired;
+            return !is;
         }
     }
     
@@ -1976,14 +1939,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!field.classList.contains('locked') && !validateField(field)) {
                 isValid = false;
                 const labelText = field.closest('.form-group').querySelector('label').textContent;
-                errors.push(`${labelText.replace('*', '').trim()} is required`);
+                errors.push(`${labelText.replace('*', '').trim()} is `);
             }
         });
         
-        // Validate required radio groups
+        // Validate  radio groups
         if (!validateRadioGroup('employmentStatus')) {
             isValid = false;
-            errors.push('Employment status selection is required');
+            errors.push('Employment status selection is ');
         }
         
         // Validate dependent status if student is selected
@@ -1991,7 +1954,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (employmentStatus && employmentStatus.value === 'student') {
             if (!validateRadioGroup('dependentStatus')) {
                 isValid = false;
-                errors.push('Student/Dependent status selection is required');
+                errors.push('Student/Dependent status selection is ');
             }
         }
         
@@ -2004,7 +1967,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isInVisibleSection && !validateFileInput(input)) {
                 isValid = false;
                 const labelText = input.closest('.file-upload').querySelector('h4').textContent;
-                errors.push(`${labelText.replace('*', '').trim()} is required`);
+                errors.push(`${labelText.replace('*', '').trim()} is `);
             }
         });
         
@@ -2012,7 +1975,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show validation errors
             const alertDiv = document.createElement('div');
             alertDiv.className = 'alert alert-danger';
-            alertDiv.innerHTML = '❌ Please fill in all required fields:<br>' + errors.slice(0, 5).join('<br>');
+            alertDiv.innerHTML = '❌ Please fill in all  fields:<br>' + errors.slice(0, 5).join('<br>');
             form.insertBefore(alertDiv, form.firstChild);
             
             // Scroll to top
