@@ -380,7 +380,7 @@ $tours_result = mysqli_query($con, $tours_sql);
                                         <?php if ($tour['tour_status'] == 'upcoming'): ?>
                                             <?php 
                                             $form_link = "tour_forms/form_" . $tour['tourname'] . ".php";
-                                            $full_url = "http://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . "/" . $form_link;
+                                            $full_url = "http://edutourism.lk/adminpage/" . $form_link; //whatsapp share if locally nn change karapn meka
                                             ?>
                                             <div class="form-link">
                                                 <small class="text-muted">Form URL:</small><br>
@@ -395,7 +395,7 @@ $tours_result = mysqli_query($con, $tours_sql);
                                                     <i class="fas fa-external-link-alt"></i> Open
                                                 </a>
                                                 <button class="btn btn-outline-info btn-sm" 
-                                                        onclick="shareWhatsApp('<?php echo urlencode($full_url); ?>', '<?php echo urlencode($tour['title_en']); ?>')">
+                                                        onclick="shareWhatsApp('<?php echo ($full_url); ?>', '<?php echo urlencode($tour['title_en']); ?>')">
                                                     <i class="fab fa-whatsapp"></i> Share
                                                 </button>
                                             </div>
@@ -781,8 +781,8 @@ $tours_result = mysqli_query($con, $tours_sql);
             }, 2000);
         }
 
-        function shareWhatsApp(url, title) {
-            const message = `Check out this tour: ${title}\n\nApply here: ${url}`;
+        function shareWhatsApp(url, title_en) {
+            const message = `Tour Name : ${title_en}\n\nVisa application here: ${url}`;
             const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
         }
