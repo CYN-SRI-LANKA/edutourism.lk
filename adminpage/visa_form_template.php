@@ -48,8 +48,6 @@ if (isset($_POST['searchnic']) && !empty($_POST['searchnic'])) {
     }
 }
 
-// Initialize Google Drive API
-
 // Function to check if field should be conditionally required
 function isFieldConditionallyRequired($fieldname, $employmentstatus, $dependentstatus = null) {
     // Always required fields
@@ -94,265 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['searchnic'])) {
             throw new Exception("NIC Number is required");
         }
 
-        // Function to handle single file upload to Google Drive
-        function handleGoogleDriveUpload($fileInputName, $surname, $otherName, $filePrefix, $tourName) {
-    global $drive;
-    
-    if (isset($_FILES[$fileInputName]) && $_FILES[$fileInputName]['error'] == 0) {
-        // Setup folder structure
-        $folderStructure = $drive->setupFolderStructure($tourName, $surname, $otherName);
-        if (!$folderStructure) {
-            throw new Exception("Failed to setup Google Drive folders: " . $drive->getLastError());
-        }
-        
-        $fileTmp = $_FILES[$fileInputName]['tmp_name'];
-        $fileExtension = pathinfo($_FILES[$fileInputName]['name'], PATHINFO_EXTENSION);
-        $newFileName = $filePrefix . '_' . time() . '.' . $fileExtension;
-        
-        // Upload to Google Drive
-        $uploadResult = $drive->uploadFile($fileTmp, $newFileName, $folderStructure['user_folder_id']);
-        
-        if ($uploadResult) {
-            return array(
-                'file_id' => $uploadResult['file_id'],
-                'download_link' => $uploadResult['download_link'],
-                'view_link' => $uploadResult['view_link'],
-                'filename' => $newFileName
-            );
-        } else {
-            throw new Exception("Failed to upload " . $filePrefix . " to Google Drive: " . $drive->getLastError());
-        }
-    }
-    return null;
-}
-
-function handleMultipleGoogleDriveUploads($fileInputName, $surname, $otherName, $filePrefix, $tourName) {
-    global $drive;
-    
-    $uploadedFiles = array();
-    
-    if (isset($_FILES[$fileInputName]) && is_array($_FILES[$fileInputName]['name'])) {
-        // Setup folder structure
-        $folderStructure = $drive->setupFolderStructure($tourName, $surname, $otherName);
-        if (!$folderStructure) {
-            throw new Exception("Failed to setup Google Drive folders: " . $drive->getLastError());
-        }
-        
-        for ($i = 0; $i < count($_FILES[$fileInputName]['name']); $i++) {
-            if ($_FILES[$fileInputName]['error'][$i] == 0) {
-                $fileTmp = $_FILES[$fileInputName]['tmp_name'][$i];
-                $fileExtension = pathinfo($_FILES[$fileInputName]['name'][$i], PATHINFO_EXTENSION);
-                $newFileName = $filePrefix . '_' . ($i + 1) . '_' . time() . '.' . $fileExtension;
-                
-                // Upload to Google Drive
-                $uploadResult = $drive->uploadFile($fileTmp, $newFileName, $folderStructure['user_folder_id']);
-                
-                if ($uploadResult) {
-                    $uploadedFiles[] = array(
-                        'file_id' => $uploadResult['file_id'],
-                        'download_link' => $uploadResult['download_link'],
-                        'view_link' => $uploadResult['view_link'],
-                        'filename' => $newFileName
-                    );
-                }
-            }
-        }
-    }
-    
-    return !empty($uploadedFiles) ? json_encode($uploadedFiles) : null;
-}
-
-    // Handle form submissions - this is where Google Drive upload happens
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['search_nic'])) {
-    $response = array('success' => false, 'message' => '');
-    
-    try {
-        // Get NIC number (primary key)
-        $nic_number = mysqli_real_escape_string($con, $_POST['nic_number']);
-        if (empty($nic_number)) {
-            throw new Exception("NIC Number is required");
-        }
-        
-        // Get surname and other_name for folder creation
-        $surname = mysqli_real_escape_string($con, $_POST['surname'] ?? '');
-        $other_name = mysqli_real_escape_string($con, $_POST['othername'] ?? '');
-        
-        if (empty($surname) || empty($other_name)) {
-            throw new Exception("Surname and Other Names are required for Google Drive upload");
-        }
-        
-        // Check if record exists for this specific tour
-        $check_query = "SELECT * FROM visa_applications WHERE nic_number = '$nic_number' AND tourname = '$tourname'";
-        $check_result = mysqli_query($con, $check_query);
-        $record_exists = mysqli_num_rows($check_result) > 0;
-        
-        // Handle file uploads to Google Drive ONLY when form is submitted
-        $passport_copy = handleGoogleDriveUpload('passport_copy', $surname, $other_name, 'passport_copy', $tourname);
-        $photo_id = handleGoogleDriveUpload('photo_id', $surname, $other_name, 'photo_id', $tourname);
-        $visa_request_letter = handleMultipleGoogleDriveUploads('visa_request_letter', $surname, $other_name, 'visa_request_letter', $tourname);
-        $bank_statements = handleMultipleGoogleDriveUploads('bank_statements', $surname, $other_name, 'bank_statement', $tourname);
-        $employment_letter = handleMultipleGoogleDriveUploads('employment_letter', $surname, $other_name, 'employment_letter', $tourname);
-        $epf_confirmation = handleMultipleGoogleDriveUploads('epf_confirmation', $surname, $other_name, 'epf_confirmation', $tourname);
-        $pay_slips = handleMultipleGoogleDriveUploads('pay_slips', $surname, $other_name, 'pay_slip', $tourname);
-        $business_registration = handleMultipleGoogleDriveUploads('business_registration', $surname, $other_name, 'business_registration', $tourname);
-        $form_pvt_ltd = handleMultipleGoogleDriveUploads('form_pvt_ltd', $surname, $other_name, 'form_pvt_ltd', $tourname);
-        $company_statements = handleMultipleGoogleDriveUploads('company_statements', $surname, $other_name, 'company_statement', $tourname);
-        $service_letters = handleMultipleGoogleDriveUploads('service_letters', $surname, $other_name, 'service_letter', $tourname);
-        $student_letter = handleMultipleGoogleDriveUploads('student_letter', $surname, $other_name, 'student_letter', $tourname);
-        $dependent_confirmation = handleMultipleGoogleDriveUploads('dependent_confirmation', $surname, $other_name, 'dependent_confirmation', $tourname);
-        $dependent_income = handleMultipleGoogleDriveUploads('dependent_income', $surname, $other_name, 'dependent_income', $tourname);
-        $other_documents = handleMultipleGoogleDriveUploads('other_documents', $surname, $other_name, 'other_document', $tourname);
-        
-        // Rest of your existing database processing code remains the same...
-        // Combine date fields
-        $date_of_birth = '';
-        if (!empty($_POST['birthYear']) && !empty($_POST['birthMonth']) && !empty($_POST['birthDay'])) {
-            $date_of_birth = $_POST['birthYear'] . '-' . str_pad($_POST['birthMonth'], 2, '0', STR_PAD_LEFT) . '-' . str_pad($_POST['birthDay'], 2, '0', STR_PAD_LEFT);
-        }
-        
-        $issue_date = '';
-        if (!empty($_POST['issueYear']) && !empty($_POST['issueMonth']) && !empty($_POST['issueDay'])) {
-            $issue_date = $_POST['issueYear'] . '-' . str_pad($_POST['issueMonth'], 2, '0', STR_PAD_LEFT) . '-' . str_pad($_POST['issueDay'], 2, '0', STR_PAD_LEFT);
-        }
-        
-        $expiry_date = '';
-        if (!empty($_POST['expiryYear']) && !empty($_POST['expiryMonth']) && !empty($_POST['expiryDay'])) {
-            $expiry_date = $_POST['expiryYear'] . '-' . str_pad($_POST['expiryMonth'], 2, '0', STR_PAD_LEFT) . '-' . str_pad($_POST['expiryDay'], 2, '0', STR_PAD_LEFT);
-        }
-        
-        // Combine address lines
-        $permanent_address = '';
-        $address_lines = array();
-        if (!empty($_POST['addressline1'])) $address_lines[] = $_POST['addressline1'];
-        if (!empty($_POST['addressline2'])) $address_lines[] = $_POST['addressline2'];
-        if (!empty($_POST['addressline3'])) $address_lines[] = $_POST['addressline3'];
-        $permanent_address = implode(', ', $address_lines);
-        
-        // Your existing database update/insert logic here...
-        // Just make sure to store the Google Drive file data as JSON
-        
-        if ($record_exists) {
-            // Update existing record
-            $update_parts = array();
-            
-            // Add all your existing field updates...
-            // File updates - store Google Drive data as JSON
-            if ($passport_copy) $update_parts[] = "passport_copy = '" . mysqli_real_escape_string($con, json_encode($passport_copy)) . "'";
-            if ($photo_id) $update_parts[] = "photo_id = '" . mysqli_real_escape_string($con, json_encode($photo_id)) . "'";
-            if ($visa_request_letter) $update_parts[] = "visa_request_letter = '" . mysqli_real_escape_string($con, $visa_request_letter) . "'";
-            if ($bank_statements) $update_parts[] = "bank_statements = '" . mysqli_real_escape_string($con, $bank_statements) . "'";
-            if ($employment_letter) $update_parts[] = "employment_letter = '" . mysqli_real_escape_string($con, $employment_letter) . "'";
-            if ($epf_confirmation) $update_parts[] = "epf_confirmation = '" . mysqli_real_escape_string($con, $epf_confirmation) . "'";
-            if ($pay_slips) $update_parts[] = "pay_slips = '" . mysqli_real_escape_string($con, $pay_slips) . "'";
-            if ($business_registration) $update_parts[] = "business_registration = '" . mysqli_real_escape_string($con, $business_registration) . "'";
-            if ($form_pvt_ltd) $update_parts[] = "form_pvt_ltd = '" . mysqli_real_escape_string($con, $form_pvt_ltd) . "'";
-            if ($company_statements) $update_parts[] = "company_statements = '" . mysqli_real_escape_string($con, $company_statements) . "'";
-            if ($service_letters) $update_parts[] = "service_letters = '" . mysqli_real_escape_string($con, $service_letters) . "'";
-            if ($student_letter) $update_parts[] = "student_letter = '" . mysqli_real_escape_string($con, $student_letter) . "'";
-            if ($dependent_confirmation) $update_parts[] = "dependent_confirmation = '" . mysqli_real_escape_string($con, $dependent_confirmation) . "'";
-            if ($dependent_income) $update_parts[] = "dependent_income = '" . mysqli_real_escape_string($con, $dependent_income) . "'";
-            if ($other_documents) $update_parts[] = "other_documents = '" . mysqli_real_escape_string($con, $other_documents) . "'";
-            
-            // Add your other field updates here...
-            $update_parts[] = "updated_at = '" . date('Y-m-d H:i:s') . "'";
-            
-            if (!empty($update_parts)) {
-                $update_query = "UPDATE visa_applications SET " . implode(', ', $update_parts) . " WHERE nic_number = '$nic_number' AND tourname = '$tourname'";
-                
-                if (mysqli_query($con, $update_query)) {
-                    $response['success'] = true;
-                    $response['message'] = "Application updated successfully with Google Drive uploads!";
-                } else {
-                    throw new Exception("Database update failed: " . mysqli_error($con));
-                }
-            } else {
-                $response['success'] = true;
-                $response['message'] = "No changes to update";
-            }
-        } else {
-            // Insert new record with Google Drive data
-            $fields = array(
-                'nic_number' => $nic_number,
-                'tourname' => $tourname,
-                'year' => mysqli_real_escape_string($con, $tour_year),
-                'name_for_certificates' => mysqli_real_escape_string($con, $_POST['name_for_certificates'] ?? ''),
-                'name_for_tour_id' => mysqli_real_escape_string($con, $_POST['name_for_tour_id'] ?? ''),
-                'permanent_address' => mysqli_real_escape_string($con, $permanent_address),
-                'city' => mysqli_real_escape_string($con, $_POST['city'] ?? ''),
-                'postal_code' => mysqli_real_escape_string($con, $_POST['postal_code'] ?? ''),
-                'province' => mysqli_real_escape_string($con, $_POST['province'] ?? ''),
-                'surname' => mysqli_real_escape_string($con, $_POST['surname'] ?? ''),
-                'other_names' => mysqli_real_escape_string($con, $_POST['othername'] ?? ''),
-                'date_of_birth' => mysqli_real_escape_string($con, $date_of_birth),
-                'gender' => mysqli_real_escape_string($con, $_POST['gender'] ?? ''),
-                'passport_number' => mysqli_real_escape_string($con, $_POST['passport_number'] ?? ''),
-                'issue_date' => mysqli_real_escape_string($con, $issue_date),
-                'expiry_date' => mysqli_real_escape_string($con, $expiry_date),
-                'employment_status' => mysqli_real_escape_string($con, $_POST['employment_status'] ?? ''),
-                'dependent_status' => mysqli_real_escape_string($con, $_POST['dependent_status'] ?? ''),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
-            );
-            
-            // Add Google Drive file data as JSON
-            if ($passport_copy) $fields['passport_copy'] = json_encode($passport_copy);
-            if ($photo_id) $fields['photo_id'] = json_encode($photo_id);
-            if ($visa_request_letter) $fields['visa_request_letter'] = $visa_request_letter;
-            if ($bank_statements) $fields['bank_statements'] = $bank_statements;
-            if ($employment_letter) $fields['employment_letter'] = $employment_letter;
-            if ($epf_confirmation) $fields['epf_confirmation'] = $epf_confirmation;
-            if ($pay_slips) $fields['pay_slips'] = $pay_slips;
-            if ($business_registration) $fields['business_registration'] = $business_registration;
-            if ($form_pvt_ltd) $fields['form_pvt_ltd'] = $form_pvt_ltd;
-            if ($company_statements) $fields['company_statements'] = $company_statements;
-            if ($service_letters) $fields['service_letters'] = $service_letters;
-            if ($student_letter) $fields['student_letter'] = $student_letter;
-            if ($dependent_confirmation) $fields['dependent_confirmation'] = $dependent_confirmation;
-            if ($dependent_income) $fields['dependent_income'] = $dependent_income;
-            if ($other_documents) $fields['other_documents'] = $other_documents;
-            
-            $columns = implode(', ', array_keys($fields));
-            $values = "'" . implode("', '", array_values($fields)) . "'";
-            
-            $insert_query = "INSERT INTO visa_applications ($columns) VALUES ($values)";
-            
-            if (mysqli_query($con, $insert_query)) {
-                $response['success'] = true;
-                $response['message'] = "Application submitted successfully with Google Drive uploads!";
-            } else {
-                throw new Exception("Database insert failed: " . mysqli_error($con));
-            }
-        }
-        
-    } catch (Exception $e) {
-        $response['message'] = $e->getMessage();
-    }
-    
-    // Return JSON response for AJAX requests
-    if (isset($_POST['ajax']) && $_POST['ajax'] == '1') {
-        header('Content-Type: application/json');
-        echo json_encode($response);
-        exit;
-    }
-    
-    // Redirect or show message for regular form submissions
-    if ($response['success']) {
-        $success_message = $response['message'];
-        // Re-fetch updated data
-        $query = "SELECT * FROM visa_applications WHERE nic_number = '$nic_number' AND tourname = '$tourname'";
-        $result = mysqli_query($con, $query);
-        if ($result && mysqli_num_rows($result) > 0) {
-            $existing_data = mysqli_fetch_assoc($result);
-            $editing = true;
-        }
-    } else {
-        $error_message = $response['message'];
-    }
-}
-
-
-       
-
         // Get surname and othername for folder creation
         $surname = mysqli_real_escape_string($con, $_POST['surname'] ?? '');
         $othername = mysqli_real_escape_string($con, $_POST['othername'] ?? '');
@@ -367,23 +106,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['search_nic'])) {
         if ($recordexists) {
             $existingrecord = mysqli_fetch_assoc($checkresult);
         }
-
-        // Handle file uploads to Google Drive
-        $passport_copy = handleGoogleDriveUpload('passport_copy', $surname, $othername, 'passportcopy', $tourname);
-        $photo_id = handleGoogleDriveUpload('photo_id', $surname, $othername, 'photoid', $tourname);
-        $visa_request_letter = handleMultipleGoogleDriveUploads('visa_request_letter', $surname, $othername, 'visarequestletter', $tourname);
-        $bank_statements = handleMultipleGoogleDriveUploads('bank_statements', $surname, $othername, 'bankstatement', $tourname);
-        $employment_letter = handleMultipleGoogleDriveUploads('employment_letter', $surname, $othername, 'employmentletter', $tourname);
-        $epf_confirmation = handleMultipleGoogleDriveUploads('epf_confirmation', $surname, $othername, 'epfconfirmation', $tourname);
-        $pay_slips = handleMultipleGoogleDriveUploads('pay_slips', $surname, $othername, 'payslip', $tourname);
-        $business_registration = handleMultipleGoogleDriveUploads('business_registration', $surname, $othername, 'businessregistration', $tourname);
-        $form_pvt_ltd = handleMultipleGoogleDriveUploads('form_pvt_ltd', $surname, $othername, 'formpvtltd', $tourname);
-        $company_statements = handleMultipleGoogleDriveUploads('company_statements', $surname, $othername, 'companystatement', $tourname);
-        $service_letters = handleMultipleGoogleDriveUploads('service_letters', $surname, $othername, 'serviceletter', $tourname);
-        $student_letter = handleMultipleGoogleDriveUploads('student_letter', $surname, $othername, 'studentletter', $tourname);
-        $dependent_confirmation = handleMultipleGoogleDriveUploads('dependent_confirmation', $surname, $othername, 'dependentconfirmation', $tourname);
-        $dependent_income = handleMultipleGoogleDriveUploads('dependent_income', $surname, $othername, 'dependentincome', $tourname);
-        $other_documents = handleMultipleGoogleDriveUploads('other_documents', $surname, $othername, 'otherdocument', $tourname);
 
         // Combine date fields
         $date_of_birth = "";
@@ -409,6 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['search_nic'])) {
         if (!empty($_POST['addressline3'])) $addresslines[] = $_POST['addressline3'];
         $permanent_address = implode(", ", $addresslines);
 
+        // STEP 1: Process SQL Operations First
         if ($recordexists) {
             // Update existing record
             $updateparts = array();
@@ -464,55 +187,55 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['search_nic'])) {
                 $updateparts[] = "dependent_status = '" . mysqli_real_escape_string($con, $_POST['dependent_status']) . "'";
             }
 
-            // File updates - store Google Drive data as JSON
-            if ($passport_copy) {
-                $updateparts[] = "passport_copy = '" . mysqli_real_escape_string($con, json_encode($passport_copy)) . "'";
+            // File updates - For now, set to "uploaded" for files that are being uploaded
+            if (isset($_FILES['passport_copy']) && $_FILES['passport_copy']['error'] == 0) {
+                $updateparts[] = "passport_copy = 'uploaded'";
             }
-            if ($photo_id) {
-                $updateparts[] = "photo_id = '" . mysqli_real_escape_string($con, json_encode($photo_id)) . "'";
+            if (isset($_FILES['photo_id']) && $_FILES['photo_id']['error'] == 0) {
+                $updateparts[] = "photo_id = 'uploaded'";
             }
-            if ($visa_request_letter) {
-                $updateparts[] = "visa_request_letter = '" . mysqli_real_escape_string($con, $visa_request_letter) . "'";
+            if (isset($_FILES['visa_request_letter']) && !empty($_FILES['visa_request_letter']['name'][0])) {
+                $updateparts[] = "visa_request_letter = 'uploaded'";
             }
-            if ($bank_statements) {
-                $updateparts[] = "bank_statements = '" . mysqli_real_escape_string($con, $bank_statements) . "'";
+            if (isset($_FILES['bank_statements']) && !empty($_FILES['bank_statements']['name'][0])) {
+                $updateparts[] = "bank_statements = 'uploaded'";
             }
-            if ($employment_letter) {
-                $updateparts[] = "employment_letter = '" . mysqli_real_escape_string($con, $employment_letter) . "'";
+            if (isset($_FILES['employment_letter']) && !empty($_FILES['employment_letter']['name'][0])) {
+                $updateparts[] = "employment_letter = 'uploaded'";
             }
-            if ($epf_confirmation) {
-                $updateparts[] = "epf_confirmation = '" . mysqli_real_escape_string($con, $epf_confirmation) . "'";
+            if (isset($_FILES['epf_confirmation']) && !empty($_FILES['epf_confirmation']['name'][0])) {
+                $updateparts[] = "epf_confirmation = 'uploaded'";
             }
-            if ($pay_slips) {
-                $updateparts[] = "pay_slips = '" . mysqli_real_escape_string($con, $pay_slips) . "'";
+            if (isset($_FILES['pay_slips']) && !empty($_FILES['pay_slips']['name'][0])) {
+                $updateparts[] = "pay_slips = 'uploaded'";
             }
-            if ($business_registration) {
-                $updateparts[] = "business_registration = '" . mysqli_real_escape_string($con, $business_registration) . "'";
+            if (isset($_FILES['business_registration']) && !empty($_FILES['business_registration']['name'][0])) {
+                $updateparts[] = "business_registration = 'uploaded'";
             }
-            if ($form_pvt_ltd) {
-                $updateparts[] = "form_pvt_ltd = '" . mysqli_real_escape_string($con, $form_pvt_ltd) . "'";
+            if (isset($_FILES['form_pvt_ltd']) && !empty($_FILES['form_pvt_ltd']['name'][0])) {
+                $updateparts[] = "form_pvt_ltd = 'uploaded'";
             }
-            if ($company_statements) {
-                $updateparts[] = "company_statements = '" . mysqli_real_escape_string($con, $company_statements) . "'";
+            if (isset($_FILES['company_statements']) && !empty($_FILES['company_statements']['name'][0])) {
+                $updateparts[] = "company_statements = 'uploaded'";
             }
-            if ($service_letters) {
-                $updateparts[] = "service_letters = '" . mysqli_real_escape_string($con, $service_letters) . "'";
+            if (isset($_FILES['service_letters']) && !empty($_FILES['service_letters']['name'][0])) {
+                $updateparts[] = "service_letters = 'uploaded'";
             }
-            if ($student_letter) {
-                $updateparts[] = "student_letter = '" . mysqli_real_escape_string($con, $student_letter) . "'";
+            if (isset($_FILES['student_letter']) && !empty($_FILES['student_letter']['name'][0])) {
+                $updateparts[] = "student_letter = 'uploaded'";
             }
-            if ($dependent_confirmation) {
-                $updateparts[] = "dependent_confirmation = '" . mysqli_real_escape_string($con, $dependent_confirmation) . "'";
+            if (isset($_FILES['dependent_confirmation']) && !empty($_FILES['dependent_confirmation']['name'][0])) {
+                $updateparts[] = "dependent_confirmation = 'uploaded'";
             }
-            if ($dependent_income) {
-                $updateparts[] = "dependent_income = '" . mysqli_real_escape_string($con, $dependent_income) . "'";
+            if (isset($_FILES['dependent_income']) && !empty($_FILES['dependent_income']['name'][0])) {
+                $updateparts[] = "dependent_income = 'uploaded'";
             }
-            if ($other_documents) {
-                $updateparts[] = "other_documents = '" . mysqli_real_escape_string($con, $other_documents) . "'";
+            if (isset($_FILES['other_documents']) && !empty($_FILES['other_documents']['name'][0])) {
+                $updateparts[] = "other_documents = 'uploaded'";
             }
 
             // Always set year from tour data
-            $updateparts[] = "year = '" . mysqli_real_escape_string($con, $touryear) . "'";
+            $updateparts[] = "year = '" . mysqli_real_escape_string($con, $tour_year) . "'";
             $updateparts[] = "updated_at = '" . date('Y-m-d H:i:s') . "'";
 
             if (!empty($updateparts)) {
@@ -532,7 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['search_nic'])) {
             $fields = array(
                 'nic_number' => $nic_number,
                 'tourname' => $tourname,
-                'year' => mysqli_real_escape_string($con, $touryear),
+                'year' => mysqli_real_escape_string($con, $tour_year),
                 'name_for_certificates' => mysqli_real_escape_string($con, $_POST['name_for_certificates'] ?? ''),
                 'name_for_tour_id' => mysqli_real_escape_string($con, $_POST['name_for_tour_id'] ?? ''),
                 'permanent_address' => mysqli_real_escape_string($con, $permanent_address),
@@ -552,22 +275,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['search_nic'])) {
                 'updated_at' => date('Y-m-d H:i:s')
             );
 
-            // Add Google Drive file data as JSON
-            if ($passport_copy) $fields['passport_copy'] = json_encode($passport_copy);
-            if ($photo_id) $fields['photo_id'] = json_encode($photo_id);
-            if ($visa_request_letter) $fields['visa_request_letter'] = $visa_request_letter;
-            if ($bank_statements) $fields['bank_statements'] = $bank_statements;
-            if ($employment_letter) $fields['employment_letter'] = $employment_letter;
-            if ($epf_confirmation) $fields['epf_confirmation'] = $epf_confirmation;
-            if ($pay_slips) $fields['pay_slips'] = $pay_slips;
-            if ($business_registration) $fields['business_registration'] = $business_registration;
-            if ($form_pvt_ltd) $fields['form_pvt_ltd'] = $form_pvt_ltd;
-            if ($company_statements) $fields['company_statements'] = $company_statements;
-            if ($service_letters) $fields['service_letters'] = $service_letters;
-            if ($student_letter) $fields['student_letter'] = $student_letter;
-            if ($dependent_confirmation) $fields['dependent_confirmation'] = $dependent_confirmation;
-            if ($dependent_income) $fields['dependent_income'] = $dependent_income;
-            if ($other_documents) $fields['other_documents'] = $other_documents;
+            // Add file upload status - For now, set to "uploaded" for files that are being uploaded
+            if (isset($_FILES['passport_copy']) && $_FILES['passport_copy']['error'] == 0) {
+                $fields['passport_copy'] = 'uploaded';
+            }
+            if (isset($_FILES['photo_id']) && $_FILES['photo_id']['error'] == 0) {
+                $fields['photo_id'] = 'uploaded';
+            }
+            if (isset($_FILES['visa_request_letter']) && !empty($_FILES['visa_request_letter']['name'][0])) {
+                $fields['visa_request_letter'] = 'uploaded';
+            }
+            if (isset($_FILES['bank_statements']) && !empty($_FILES['bank_statements']['name'][0])) {
+                $fields['bank_statements'] = 'uploaded';
+            }
+            if (isset($_FILES['employment_letter']) && !empty($_FILES['employment_letter']['name'][0])) {
+                $fields['employment_letter'] = 'uploaded';
+            }
+            if (isset($_FILES['epf_confirmation']) && !empty($_FILES['epf_confirmation']['name'][0])) {
+                $fields['epf_confirmation'] = 'uploaded';
+            }
+            if (isset($_FILES['pay_slips']) && !empty($_FILES['pay_slips']['name'][0])) {
+                $fields['pay_slips'] = 'uploaded';
+            }
+            if (isset($_FILES['business_registration']) && !empty($_FILES['business_registration']['name'][0])) {
+                $fields['business_registration'] = 'uploaded';
+            }
+            if (isset($_FILES['form_pvt_ltd']) && !empty($_FILES['form_pvt_ltd']['name'][0])) {
+                $fields['form_pvt_ltd'] = 'uploaded';
+            }
+            if (isset($_FILES['company_statements']) && !empty($_FILES['company_statements']['name'][0])) {
+                $fields['company_statements'] = 'uploaded';
+            }
+            if (isset($_FILES['service_letters']) && !empty($_FILES['service_letters']['name'][0])) {
+                $fields['service_letters'] = 'uploaded';
+            }
+            if (isset($_FILES['student_letter']) && !empty($_FILES['student_letter']['name'][0])) {
+                $fields['student_letter'] = 'uploaded';
+            }
+            if (isset($_FILES['dependent_confirmation']) && !empty($_FILES['dependent_confirmation']['name'][0])) {
+                $fields['dependent_confirmation'] = 'uploaded';
+            }
+            if (isset($_FILES['dependent_income']) && !empty($_FILES['dependent_income']['name'][0])) {
+                $fields['dependent_income'] = 'uploaded';
+            }
+            if (isset($_FILES['other_documents']) && !empty($_FILES['other_documents']['name'][0])) {
+                $fields['other_documents'] = 'uploaded';
+            }
 
             $columns = implode(", ", array_keys($fields));
             $values = "'" . implode("', '", array_values($fields)) . "'";
@@ -580,6 +333,119 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['search_nic'])) {
                 throw new Exception("Database insert failed: " . mysqli_error($con));
             }
         }
+
+        // STEP 2: Process Google Drive Uploads (Currently commented out for later implementation)
+        
+        // Function to handle single file upload to Google Drive
+        function handleGoogleDriveUpload($fileInputName, $surname, $otherName, $filePrefix, $tourName) {
+            global $drive;
+            
+            if (isset($_FILES[$fileInputName]) && $_FILES[$fileInputName]['error'] == 0) {
+                // Setup folder structure
+                $folderStructure = $drive->setupFolderStructure($tourName, $surname, $otherName);
+                if (!$folderStructure) {
+                    throw new Exception("Failed to setup Google Drive folders: " . $drive->getLastError());
+                }
+                
+                $fileTmp = $_FILES[$fileInputName]['tmp_name'];
+                $fileExtension = pathinfo($_FILES[$fileInputName]['name'], PATHINFO_EXTENSION);
+                $newFileName = $filePrefix . '_' . time() . '.' . $fileExtension;
+                
+                // Upload to Google Drive
+                $uploadResult = $drive->uploadFile($fileTmp, $newFileName, $folderStructure['user_folder_id']);
+                
+                if ($uploadResult) {
+                    return array(
+                        'file_id' => $uploadResult['file_id'],
+                        'download_link' => $uploadResult['download_link'],
+                        'view_link' => $uploadResult['view_link'],
+                        'filename' => $newFileName
+                    );
+                } else {
+                    throw new Exception("Failed to upload " . $filePrefix . " to Google Drive: " . $drive->getLastError());
+                }
+            }
+            return null;
+        }
+
+        function handleMultipleGoogleDriveUploads($fileInputName, $surname, $otherName, $filePrefix, $tourName) {
+            global $drive;
+            
+            $uploadedFiles = array();
+            
+            if (isset($_FILES[$fileInputName]) && is_array($_FILES[$fileInputName]['name'])) {
+                // Setup folder structure
+                $folderStructure = $drive->setupFolderStructure($tourName, $surname, $otherName);
+                if (!$folderStructure) {
+                    throw new Exception("Failed to setup Google Drive folders: " . $drive->getLastError());
+                }
+                
+                for ($i = 0; $i < count($_FILES[$fileInputName]['name']); $i++) {
+                    if ($_FILES[$fileInputName]['error'][$i] == 0) {
+                        $fileTmp = $_FILES[$fileInputName]['tmp_name'][$i];
+                        $fileExtension = pathinfo($_FILES[$fileInputName]['name'][$i], PATHINFO_EXTENSION);
+                        $newFileName = $filePrefix . '_' . ($i + 1) . '_' . time() . '.' . $fileExtension;
+                        
+                        // Upload to Google Drive
+                        $uploadResult = $drive->uploadFile($fileTmp, $newFileName, $folderStructure['user_folder_id']);
+                        
+                        if ($uploadResult) {
+                            $uploadedFiles[] = array(
+                                'file_id' => $uploadResult['file_id'],
+                                'download_link' => $uploadResult['download_link'],
+                                'view_link' => $uploadResult['view_link'],
+                                'filename' => $newFileName
+                            );
+                        }
+                    }
+                }
+            }
+            
+            return !empty($uploadedFiles) ? json_encode($uploadedFiles) : null;
+        }
+
+        // Handle file uploads to Google Drive (commented out for now)
+        $passport_copy = handleGoogleDriveUpload('passport_copy', $surname, $othername, 'passportcopy', $tourname);
+        $photo_id = handleGoogleDriveUpload('photo_id', $surname, $othername, 'photoid', $tourname);
+        $visa_request_letter = handleMultipleGoogleDriveUploads('visa_request_letter', $surname, $othername, 'visarequestletter', $tourname);
+        $bank_statements = handleMultipleGoogleDriveUploads('bank_statements', $surname, $othername, 'bankstatement', $tourname);
+        $employment_letter = handleMultipleGoogleDriveUploads('employment_letter', $surname, $othername, 'employmentletter', $tourname);
+        $epf_confirmation = handleMultipleGoogleDriveUploads('epf_confirmation', $surname, $othername, 'epfconfirmation', $tourname);
+        $pay_slips = handleMultipleGoogleDriveUploads('pay_slips', $surname, $othername, 'payslip', $tourname);
+        $business_registration = handleMultipleGoogleDriveUploads('business_registration', $surname, $othername, 'businessregistration', $tourname);
+        $form_pvt_ltd = handleMultipleGoogleDriveUploads('form_pvt_ltd', $surname, $othername, 'formpvtltd', $tourname);
+        $company_statements = handleMultipleGoogleDriveUploads('company_statements', $surname, $othername, 'companystatement', $tourname);
+        $service_letters = handleMultipleGoogleDriveUploads('service_letters', $surname, $othername, 'serviceletter', $tourname);
+        $student_letter = handleMultipleGoogleDriveUploads('student_letter', $surname, $othername, 'studentletter', $tourname);
+        $dependent_confirmation = handleMultipleGoogleDriveUploads('dependent_confirmation', $surname, $othername, 'dependentconfirmation', $tourname);
+        $dependent_income = handleMultipleGoogleDriveUploads('dependent_income', $surname, $othername, 'dependentincome', $tourname);
+        $other_documents = handleMultipleGoogleDriveUploads('other_documents', $surname, $othername, 'otherdocument', $tourname);
+
+        // After successful Google Drive uploads, update database with actual file info
+        if ($response['success']) {
+            $file_update_parts = array();
+            
+            if ($passport_copy) {
+                $file_update_parts[] = "passport_copy = '" . mysqli_real_escape_string($con, json_encode($passport_copy)) . "'";
+            }
+            if ($photo_id) {
+                $file_update_parts[] = "photo_id = '" . mysqli_real_escape_string($con, json_encode($photo_id)) . "'";
+            }
+            if ($visa_request_letter) {
+                $file_update_parts[] = "visa_request_letter = '" . mysqli_real_escape_string($con, $visa_request_letter) . "'";
+            }
+            if ($bank_statements) {
+                $file_update_parts[] = "bank_statements = '" . mysqli_real_escape_string($con, $bank_statements) . "'";
+            }
+            // Add other file updates as needed...
+            
+            if (!empty($file_update_parts)) {
+                $file_update_query = "UPDATE visa_applications SET " . implode(', ', $file_update_parts) . " WHERE nic_number = '$nic_number' AND tourname = '$tourname'";
+                mysqli_query($con, $file_update_query);
+            }
+        }
+        
+
     } catch (Exception $e) {
         $response['message'] = $e->getMessage();
     }
@@ -665,6 +531,11 @@ if ($existingdata) {
 // Function to display Google Drive file information
 function displayGoogleDriveFiles($data) {
     if (empty($data)) return '';
+    
+    // If it's just "uploaded", return that
+    if ($data === 'uploaded') {
+        return 'Files uploaded to Google Drive';
+    }
     
     $files = json_decode($data, true);
     if (!$files) return $data; // Fallback to original data if not JSON
