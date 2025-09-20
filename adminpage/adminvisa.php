@@ -105,7 +105,6 @@ if ($show_table) {
     // Get filter/search inputs (with XSS/SQL prevention)
     $search = trim($_GET['search'] ?? '');
     $filter_missing = $_GET['filter_missing'] ?? '';
-    $filter_required = $_GET['filter_required'] ?? '';
 
     $search_sql = '';
     $where = [];
@@ -143,14 +142,6 @@ if ($show_table) {
             $miss_checks[] = "($col IS NULL OR $col = '')";
         }
         $where[] = '(' . implode(" OR ", $miss_checks) . ')';
-    }
-
-    if ($filter_required === "1") {
-        $req_checks = [];
-        foreach ($required_fields as $col) {
-            $req_checks[] = "($col IS NULL OR $col = '')";
-        }
-        $where[] = '(' . implode(" OR ", $req_checks) . ')';
     }
 
     if ($where) $search_sql = " WHERE ".implode(" AND ", $where);
@@ -272,6 +263,8 @@ if ($show_table) {
         .btn-primary:disabled { background: #cccccc; cursor: not-allowed; }
         .btn-secondary { background: #6c757d; color: white; }
         .btn-secondary:hover { background: #545b62; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
         
         /* Dynamic Dropdown Styles */
         .loading-tours {
@@ -505,14 +498,9 @@ $(document).ready(function() {
                 Show only records with <span style="color:#d55; font-weight:600;">missing files</span>
                 <span class="stat-dot missing"></span>
             </label>
-            <label class="filter-row">
-                <input type="checkbox" name="filter_required" value="1" <?php if(($filter_required ?? '') == "1") echo "checked";?>>
-                Show only records with <span style="color:#d55; font-weight:600;">missing required fields</span>
-                <span class="stat-dot required"></span>
-            </label>
             <button type="submit" class="search-in" style="background:#2b8e62;color:#fff;border:none;">Apply Filters</button>
             <a href="adminvisa.php?year=<?php echo urlencode($selected_year); ?>&tour=<?php echo urlencode($selected_tour); ?>" class="search-in" style="background:#f6b085;color:#fff;text-decoration:none;border:none;">Reset Filters</a>
-            <a href="file_explorer.php" target="_blank" class="search-in" style="background: #5ced1eff;color:#fff;text-decoration:none;border:none;">📁 Download</a>
+            <a href="export_excel.php?year=<?php echo urlencode($selected_year); ?>&tour=<?php echo urlencode($selected_tour); ?><?php echo isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : ''; ?><?php echo isset($_GET['filter_missing']) ? '&filter_missing=' . urlencode($_GET['filter_missing']) : ''; ?>" class="btn btn-success" style="text-decoration:none;">📊 Export to Excel</a>
         </form>
         
         <div class="table-wrap">
